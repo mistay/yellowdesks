@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login_or_register"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0px"
+    tools:context="at.langhofer.yellowdesks3.LoginOrRegisterActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/start01"
+        android:id="@+id/imageView"
+        android:scaleType="centerCrop"
+        android:padding="0dp"
+         />
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            >
+
+            <Button
+                android:text="Login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="Register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/button"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:text="by coworkingsalzburg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</FrameLayout>
