@@ -1,5 +1,6 @@
 package at.langhofer.yellowdesks3;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -23,6 +24,10 @@ public class ResultsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 System.out.println("clicked item" + i);
+
+                Intent myIntent = new Intent(ResultsActivity.this, DetailActivity.class);
+                myIntent.putExtra("itemclicked", i); //Optional parameters
+                ResultsActivity.this.startActivity(myIntent);
             }
         });
 
