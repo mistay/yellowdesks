@@ -2,6 +2,7 @@ package at.langhofer.yellowdesks3;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +50,15 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Item> {
         holder.tvTitle = (TextView) view.findViewById(R.id.tvtitle);
         holder.tvDesc = (TextView) view.findViewById(R.id.tvdesc);
         holder.tvDate = (TextView) view.findViewById(R.id.tvdate);
+        holder.imgView = (ImageView) view.findViewById(R.id.resultimage);
 
         holder.tvTitle.setText(objBean.getTitle());
         holder.tvDesc.setText(objBean.getDesc());
+
+        Drawable myDrawable = view.getContext().getResources().getDrawable(R.drawable.alex);
+
+        holder.imgView.setImageDrawable(myDrawable);
+
 
 
         return view;

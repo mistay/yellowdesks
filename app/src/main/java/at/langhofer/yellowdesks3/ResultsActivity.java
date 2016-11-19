@@ -21,9 +21,16 @@ public class ResultsActivity extends AppCompatActivity {
         String[] myStringArray = {"a", "b"};
 
         List<Item> arrayOfList = new ArrayList<Item>();
-        arrayOfList.add(new Item("a", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("a", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("a", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("first", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("seconde", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("aTHRID", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("afourth", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("afifth", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("asixxxx", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("aseven", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("aeight", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("anine", "b", "a", "b", "c"));
+        arrayOfList.add(new Item("aten", "b", "a", "b", "c"));
 
         YellowdeskRowAdapter adapter = new YellowdeskRowAdapter(this, R.layout.listviewentry_searchresult, arrayOfList);
 

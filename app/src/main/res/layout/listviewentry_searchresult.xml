@@ -5,7 +5,7 @@
     >
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/resultimage"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerVertical="true"
