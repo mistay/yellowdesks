@@ -47,25 +47,22 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Item> {
 
         objBean = items.get(position);
 
-        holder.tvTitle = (TextView) view.findViewById(R.id.tvtitle);
-        holder.tvDesc = (TextView) view.findViewById(R.id.tvdesc);
-        holder.tvDate = (TextView) view.findViewById(R.id.tvdate);
+        holder.deskstatus = (TextView) view.findViewById(R.id.deskstatus);
         holder.imgView = (ImageView) view.findViewById(R.id.resultimage);
 
-        holder.tvTitle.setText(objBean.getTitle());
-        holder.tvDesc.setText(objBean.getDesc());
+        holder.deskstatus.setText("YELLOW desks: " + objBean.gettotalDesks() + "/" + objBean.getAvailableDesks());
 
-        Drawable myDrawable = view.getContext().getResources().getDrawable(R.drawable.alex);
-
+        Drawable myDrawable = null;
+        myDrawable = view.getContext().getResources().getDrawable(R.drawable.alex);
+        if (position % 2 == 0)
+            myDrawable = view.getContext().getResources().getDrawable(R.drawable.twocoworkers);
         holder.imgView.setImageDrawable(myDrawable);
-
-
 
         return view;
     }
 
     public class ViewHolder {
-        public TextView tvTitle, tvDesc, tvDate;
+        public TextView deskstatus;
         private ImageView imgView;
     }
 }

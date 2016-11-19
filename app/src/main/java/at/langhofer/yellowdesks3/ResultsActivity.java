@@ -6,37 +6,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ResultsActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
-
-
-        String[] myStringArray = {"a", "b"};
-
-        List<Item> arrayOfList = new ArrayList<Item>();
-        arrayOfList.add(new Item("first", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("seconde", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("aTHRID", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("afourth", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("afifth", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("asixxxx", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("aseven", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("aeight", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("anine", "b", "a", "b", "c"));
-        arrayOfList.add(new Item("aten", "b", "a", "b", "c"));
-
-        YellowdeskRowAdapter adapter = new YellowdeskRowAdapter(this, R.layout.listviewentry_searchresult, arrayOfList);
-
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-        //        android.R.layout.simple_list_item_1, myStringArray);
-
+        YellowdeskRowAdapter adapter = new YellowdeskRowAdapter(this, R.layout.listviewentry_searchresult, Data.getInstance().getData());
 
         ListView listView = (ListView) findViewById(R.id.listviewSearchResults);
         listView.setAdapter(adapter);
@@ -44,7 +22,7 @@ public class ResultsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println("clicked item");
+                System.out.println("clicked item" + i);
             }
         });
 

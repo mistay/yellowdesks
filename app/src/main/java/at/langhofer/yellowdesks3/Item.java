@@ -1,6 +1,8 @@
 package at.langhofer.yellowdesks3;
 
 public class Item {
+    int totalDesks=0;
+    int availableDesks=0;
     private String id = null;
     private String title = null;
     private String desc = null;
@@ -11,12 +13,19 @@ public class Item {
         // do not allow new Item()
     }
 
-    public Item(String id, String title, String desc, String pubdate, String link) {
+    public Item(int totalDesks, int availableDesks, String id, String title, String desc, String pubdate) {
+        this.totalDesks = totalDesks;
+        this.availableDesks = availableDesks;
         this.id = id;
         this.title = title;
         this.desc = desc;
         this.pubdate = pubdate;
-        this.link = link;
+    }
+    public int gettotalDesks() {
+        return totalDesks;
+    }
+    public int getAvailableDesks() {
+        return availableDesks;
     }
 
     public String getId() {
