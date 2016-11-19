@@ -1,7 +1,10 @@
 package at.langhofer.yellowdesks3;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +14,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import static android.R.attr.value;
 import static at.langhofer.yellowdesks3.R.id.map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -70,6 +74,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
 
+        final Button btnLogin = (Button) findViewById(R.id.btnList);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MapActivity.this, ResultsActivity.class);
+                myIntent.putExtra("key", value); //Optional parameters
+                MapActivity.this.startActivity(myIntent);
+            }
+        });
 
     }
 
