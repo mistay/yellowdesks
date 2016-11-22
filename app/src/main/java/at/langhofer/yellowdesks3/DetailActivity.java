@@ -26,7 +26,7 @@ public class DetailActivity extends AppCompatActivity {
         textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
 
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
-        textviewDetail.setText("Details");
+        textviewDetail.setText( host.getDetails() );
 
         final ImageView detailImage = (ImageView) findViewById(R.id.detailimage);
 
