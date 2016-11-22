@@ -51,10 +51,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Data data = Data.getInstance();
 
         // hook up data ready
-        data.taskDelegate = new TaskDelegate() {
+        TaskDelegate taskDelegate = new TaskDelegate() {
             @Override
             public void taskCompletionResult(String result) {
-
                 // data is ready
                 System.out.println("data ready");
 
@@ -68,9 +67,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         };
 
         // start download
-        System.out.println("start download");
-        data.downloadHosts();
-
+        System.out.println("starting download...");
+        data.downloadHosts(taskDelegate);
 
         mMap.getUiSettings().setZoomControlsEnabled( true );
         mMap.getUiSettings().setAllGesturesEnabled( true );

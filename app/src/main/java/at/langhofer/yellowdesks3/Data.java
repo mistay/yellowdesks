@@ -1,23 +1,37 @@
 package at.langhofer.yellowdesks3;
 
+import android.graphics.Bitmap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 public class Data {
-
-    TaskDelegate taskDelegate;
-
 
     List<Host> arrayOfList = new ArrayList<Host>();
 
     private Data() {
-        downloadHosts();
     }
 
-    public void downloadHosts() {
+    public void downloadImage(final Host host, final DelegateImageDownloaded downloadFinished) {
+        DownloadWebimageTask downloadWebimageTask = new DownloadWebimageTask();
+        downloadWebimageTask.delegate = new DelegateImageDownloaded() {
+            @Override
+            public void imageDownloaded(Bitmap result) {
+                host.setBitmap(result);
+                System.out.println("taskCompletionResult: " + result);
+                downloadFinished.imageDownloaded(result);
+            }
+        };
+        downloadWebimageTask.execute(host.getImageURL());
+        System.out.println("sent download request: " + host.getImageURL());
+    }
+
+    public void downloadHosts(final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {
             @Override
@@ -31,25 +45,23 @@ public class Data {
                         for (int i=0; i<jsonArray.length(); i++) {
                             JSONObject value = jsonArray.getJSONObject(i);
                             System.out.println("building new Host()");
-                            Host h = new Host( Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")));
+                            String details = value.getString("details");
+                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), value.getString("imageURL"), details);
+
                             System.out.println("debugging new Host()");
                             h.debug();
                             System.out.println("eof debugging new Host()");
                             arrayOfList.add(h);
-
                         }
                     } catch (Exception e) {
                         System.out.println("could not parse json: " + raw + ". exception: " + e.toString());
                     }
 
-                    taskDelegate.taskCompletionResult( "");
+                    downloadFinished.taskCompletionResult("");
                 }
             }
         };
-
-
         downloadWebTask.execute("http://langhofer.net/yellowdesks/hosts.json");
-
         System.out.println("sent download request");
     }
 
