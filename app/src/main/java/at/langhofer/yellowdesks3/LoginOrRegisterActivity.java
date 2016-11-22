@@ -16,12 +16,19 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_or_register);
 
         final Button btnLogin = (Button) findViewById(R.id.btnLogin);
-
         btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent myIntent = new Intent(LoginOrRegisterActivity.this, MapActivity.class);
                 myIntent.putExtra("key", value); //Optional parameters
                 LoginOrRegisterActivity.this.startActivity(myIntent);
+            }
+        });
+
+
+        final Button btnRegister = (Button) findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
             }
         });
     }

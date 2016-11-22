@@ -1,29 +1,57 @@
 package at.langhofer.yellowdesks3;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by arminlanghofer on 19.11.16.
- */
-
 public class Data {
 
-    List<Item> arrayOfList = new ArrayList<Item>();
+    TaskDelegate taskDelegate;
+
+
+    List<Host> arrayOfList = new ArrayList<Host>();
 
     private Data() {
-        arrayOfList.add(new Item(10,35, "Extras: Highspeed Internet, Küche, Besprechungsraum, Telefonierräume, Garten, Kantine, Kaffee, Barrierefrei. Transportation: O-Bus 3&6 Parken: kostenpflichtig. ", "a", "b", "c"));
-        arrayOfList.add(new Item(3,11, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(4,12, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(5,13, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(6,14, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(7,15, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(8,16, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(9,17, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(10,18, "b", "a", "b", "c"));
-        arrayOfList.add(new Item(11,19, "b", "a", "b", "c"));
+        downloadHosts();
     }
 
+    public void downloadHosts() {
+        DownloadWebTask downloadWebTask = new DownloadWebTask();
+        downloadWebTask.delegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String raw) {
+                if (raw != null && raw != "") {
+                    try {
+                        JSONArray jsonArray = new JSONArray(raw);
+                        System.out.println("created jsonObject: " + jsonArray.toString());
+
+                        arrayOfList.clear();
+                        for (int i=0; i<jsonArray.length(); i++) {
+                            JSONObject value = jsonArray.getJSONObject(i);
+                            System.out.println("building new Host()");
+                            Host h = new Host( Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")));
+                            System.out.println("debugging new Host()");
+                            h.debug();
+                            System.out.println("eof debugging new Host()");
+                            arrayOfList.add(h);
+
+                        }
+                    } catch (Exception e) {
+                        System.out.println("could not parse json: " + raw + ". exception: " + e.toString());
+                    }
+
+                    taskDelegate.taskCompletionResult( "");
+                }
+            }
+        };
+
+
+        downloadWebTask.execute("http://langhofer.net/yellowdesks/hosts.json");
+
+        System.out.println("sent download request");
+    }
 
     private static Data _instance = null;
     public static Data getInstance() {
@@ -35,7 +63,8 @@ public class Data {
 
     }
 
-    public List<Item> getData() {
+    public List<Host> getData() {
         return arrayOfList;
     }
+
 }

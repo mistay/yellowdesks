@@ -12,18 +12,20 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class YellowdeskRowAdapter extends ArrayAdapter<Item> {
+import static java.lang.String.*;
+
+public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
 
     private Activity activity;
-    private List<Item> items;
-    private Item objBean;
+    private List<Host> hosts;
+    private Host objBean;
     private int row;
 
-    public YellowdeskRowAdapter(Activity act, int resource, List<Item> arrayList) {
+    public YellowdeskRowAdapter(Activity act, int resource, List<Host> arrayList) {
         super(act, resource, arrayList);
         this.activity = act;
         this.row = resource;
-        this.items = arrayList;
+        this.hosts = arrayList;
     }
 
     @Override
@@ -42,20 +44,21 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Item> {
             holder = (ViewHolder) view.getTag();
         }
 
-        if ((items == null) || ((position + 1) > items.size()))
+        if ((hosts == null) || ((position + 1) > hosts.size()))
             return view;
 
-        objBean = items.get(position);
+        objBean = hosts.get(position);
 
         holder.deskstatus = (TextView) view.findViewById(R.id.deskstatus);
         holder.imgView = (ImageView) view.findViewById(R.id.resultimage);
 
-        holder.deskstatus.setText("YELLOW desks: " + objBean.gettotalDesks() + "/" + objBean.getAvailableDesks());
+        holder.deskstatus.setText(format("YELLOW desks: %d/%d", objBean.gettotalDesks(), objBean.getAvailableDesks()));
 
         Drawable myDrawable = null;
         myDrawable = view.getContext().getResources().getDrawable(R.drawable.alex);
-        if (position % 2 == 0)
+        if ((position % 2) == 0) {
             myDrawable = view.getContext().getResources().getDrawable(R.drawable.twocoworkers);
+        }
         holder.imgView.setImageDrawable(myDrawable);
 
         return view;

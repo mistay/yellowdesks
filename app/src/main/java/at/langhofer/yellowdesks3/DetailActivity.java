@@ -20,10 +20,10 @@ public class DetailActivity extends AppCompatActivity {
 
         System.out.println("on create, clicked:" + value);
 
-        Item item = Data.getInstance().getData().get(value);
+        Host host = Data.getInstance().getData().get(value);
 
         final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
-        textViewDeskstatus2.setText("YELLOW desks: " + item.gettotalDesks() + "/" + item.getAvailableDesks());
+        textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
 
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
         textviewDetail.setText("Ydetals");
