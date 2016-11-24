@@ -25,6 +25,15 @@ android {
     }
 }
 
+
+//facebook login//
+repositories {
+    mavenCentral()
+}
+//facebook login//
+
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -35,7 +44,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //y//
+
     compile 'com.android.support:multidex:1.0.1'
-    //y//k
+    //y//
+
+    //facebook login//
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    //facebook login//
 
 }
