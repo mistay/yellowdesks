@@ -11,13 +11,19 @@ public class Host {
     private double lng = Integer.MIN_VALUE;
     private String imageURL = "";
     private Bitmap bitmap = null;
+
+
+    // e.g. "Highspeed Interhet, Küche, Besprechungsraum, ..."
     private String details = "";
+
+    // e.g. "Creativespace im Herzen Salzburgs"
+    private String title = "";
 
     private Host() {
         // do not allow new Item()
     }
 
-    public Host( Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, String details) {
+    public Host( Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, String details, String title) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -26,6 +32,7 @@ public class Host {
         this.lng = lng;
         this.imageURL = imageURL;
         this.details = details;
+        this.title = title;
     }
 
     public void debug() {
@@ -52,4 +59,8 @@ public class Host {
 
     public Bitmap getBitmap() { return bitmap; }
     public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
+
+    public String getHostDetails() {
+        return "Host:" + host + "<br >" +  title;
+    }
 }

@@ -8,10 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Data {
-
     List<Host> arrayOfList = new ArrayList<Host>();
 
     private Data() {
@@ -46,7 +43,8 @@ public class Data {
                             JSONObject value = jsonArray.getJSONObject(i);
                             System.out.println("building new Host()");
                             String details = value.getString("details");
-                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), value.getString("imageURL"), details);
+                            String title = value.getString("title");
+                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), value.getString("imageURL"), details, title);
 
                             System.out.println("debugging new Host()");
                             h.debug();
@@ -67,12 +65,10 @@ public class Data {
 
     private static Data _instance = null;
     public static Data getInstance() {
-
         if (_instance == null)
             _instance = new Data();
 
         return _instance;
-
     }
 
     public List<Host> getData() {

@@ -28,6 +28,10 @@ public class DetailActivity extends AppCompatActivity {
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
         textviewDetail.setText( host.getDetails() );
 
+        final TextView hostDetails = (TextView) findViewById(R.id.txt_hostdetails);
+        hostDetails.setText("YELLOW desks: " + host.getHostDetails());
+
+
         final ImageView detailImage = (ImageView) findViewById(R.id.detailimage);
 
 //        Drawable drawable = getResources().getDrawable(R.drawable.alex);
