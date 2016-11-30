@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 
+
+// google maps?
+
+
+
+
+//
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
@@ -15,7 +22,6 @@ android {
         // Enabling multidex support.
         multiDexEnabled true
         //y//
-
     }
     buildTypes {
         release {
@@ -40,11 +46,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.google.android.gms:play-services:10.0.0'
     testCompile 'junit:junit:4.12'
 
     //y//
-
     compile 'com.android.support:multidex:1.0.1'
     //y//
 
