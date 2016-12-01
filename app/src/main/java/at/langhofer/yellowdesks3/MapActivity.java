@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
@@ -58,10 +59,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 System.out.println("data ready");
 
                 List<Host> hosts = Data.getInstance().getData();
-                for (Host host : hosts) {
+                for (final Host host : hosts) {
                     LatLng latlng = new LatLng( host.getLat(), host.getLng() );
                     System.out.println("new latlng: " + latlng.toString());
                     mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            Intent myIntent = new Intent( MapActivity.this, DetailActivity.class );
+                            myIntent.putExtra( "key", host.getId() ); //Optional parameters
+                            MapActivity.this.startActivity( myIntent );
+                            return false;
+                        }
+                    });
                 }
             }
         };

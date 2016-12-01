@@ -1,22 +1,16 @@
 apply plugin: 'com.android.application'
-
-
 // google maps?
-
-
-
-
 //
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
-    defaultConfig {
-        applicationId "at.langhofer.yellowdesks3"
-        minSdkVersion 19
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildToolsVersion "25.0.0"
+        defaultConfig {
+            applicationId "at.langhofer.yellowdesks3"
+            minSdkVersion 19
+            targetSdkVersion 25
+            versionCode 1
+            versionName "1.0"
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //y//
         // Enabling multidex support.
@@ -31,14 +25,11 @@ android {
     }
 }
 
-
 //facebook login//
 repositories {
     mavenCentral()
 }
 //facebook login//
-
-
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -56,5 +47,4 @@ dependencies {
     //facebook login//
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     //facebook login//
-
 }

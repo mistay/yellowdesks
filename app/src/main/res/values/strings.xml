@@ -2,13 +2,10 @@
     <string name="app_name">Yellow Desks</string>
     <string name="title_activity_map">Map</string>
 
-
     <!--test-->
     <string name="facebook_app_id">349857938705427</string>
-
     <string name="fb_login_protocol_scheme">fb349857938705427</string>
     <!--test-->
-
 
     <!--productive-->
     <!-- <string name="facebook_app_id">349857342038820</string> -->
