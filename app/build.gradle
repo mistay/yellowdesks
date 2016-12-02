@@ -3,14 +3,14 @@ apply plugin: 'com.android.application'
 //
 android {
     compileSdkVersion 25
-        buildToolsVersion "25.0.0"
-        defaultConfig {
-            applicationId "at.langhofer.yellowdesks3"
-            minSdkVersion 19
-            targetSdkVersion 25
-            versionCode 1
-            versionName "1.0"
-            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    buildToolsVersion "25.0.0"
+    defaultConfig {
+        applicationId "at.langhofer.yellowdesks3"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         //y//
         // Enabling multidex support.
@@ -25,26 +25,23 @@ android {
     }
 }
 
-//facebook login//
-repositories {
-    mavenCentral()
-}
-//facebook login//
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //y//
+    //y//
+
+    //facebook login//
+    //facebook login//
     compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.google.android.gms:play-services:10.0.0'
-    testCompile 'junit:junit:4.12'
-
-    //y//
+    compile 'com.google.android.gms:play-services:10.0.1'
     compile 'com.android.support:multidex:1.0.1'
-    //y//
-
-    //facebook login//
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    //facebook login//
+    compile 'com.android.support:design:25.0.1'
+    testCompile 'junit:junit:4.12'
 }

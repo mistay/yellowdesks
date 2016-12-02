@@ -3,6 +3,10 @@
 buildscript {
     repositories {
         jcenter()
+
+        //facebook login//
+        mavenCentral()
+        //facebook login//
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
@@ -12,6 +16,8 @@ buildscript {
         //y// google maps?
         classpath 'com.google.gms:google-services:3.0.0'
         //y//
+
+
 
 
 
