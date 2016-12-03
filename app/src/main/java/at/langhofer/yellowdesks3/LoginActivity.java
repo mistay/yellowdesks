@@ -6,13 +6,16 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -32,41 +35,31 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "at.langhofer.yellowdesks3",
-                    PackageManager.GET_SIGNATURES);
-            for (android.content.pm.Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                System.out.println ("KeyHash (for e.g. facebook):" + Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (Exception e) {
-            System.out.println ("Exception Facebook:" + e.getMessage());
-        }
-        System.out.println ("Printed Keyhash");
-
-
-
-
-
 
         // facebook login button//
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+
 
         callbackManager = CallbackManager.Factory.create();
 
         FacebookSdk.setIsDebugEnabled(true);
         System.out.println("user id:" + AppEventsLogger.getUserID());
+
+        System.out.println("access token: " + AccessToken.getCurrentAccessToken() );
+
         // facebook login button//
 
         final LoginButton btnF = (LoginButton) findViewById(R.id.btnLoginFacebook);
+
+        final TextView txtLoginStatus = (TextView) findViewById(R.id.txtLoginStatus);
+
+
 
         btnF.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -86,8 +79,10 @@ public class LoginActivity extends AppCompatActivity {
                                     LoggedInUser.email = object.getString("email");
                                     LoggedInUser.realname =object.getString("name");
 
-                                    System.out.println("email: " + LoggedInUser.email );
-                                    System.out.println("realname: " + LoggedInUser.realname );
+                                    System.out.println("email: " + LoggedInUser.email);
+                                    System.out.println("realname: " + LoggedInUser.realname);
+
+                                    txtLoginStatus.setText("Logged in user: " + LoggedInUser.email);
                                 } catch (Exception e) {
                                     System.out.println("exc: " + e.toString());
                                 }
