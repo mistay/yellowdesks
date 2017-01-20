@@ -1,6 +1,7 @@
 package at.langhofer.yellowdesks3;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -86,6 +88,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mMap.getUiSettings().setZoomGesturesEnabled( true );
 
         LatLng salzburgdowntown = new LatLng( 47.806021, 13.050602000000026 );
+
+        CircleOptions circleOptions = new CircleOptions();
+
+        circleOptions.center(salzburgdowntown);
+        circleOptions.radius(1000);
+
+        circleOptions.fillColor(Color.argb(50, 50,50,0));
+        circleOptions.strokeColor(Color.YELLOW);
+        circleOptions.strokeWidth(2);
+
+        mMap.addCircle(circleOptions);
+
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom( salzburgdowntown, 12 );
         mMap.moveCamera( update );
     }
