@@ -51,14 +51,15 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        final String id = Profile.getCurrentProfile().getId();
-        System.out.println("fb access id: " + id );
-        if (id != null) {
-            // user already logged in in fb ->
-            Intent myIntent = new Intent(LoginOrRegisterActivity.this, MapActivity.class);
-            LoginOrRegisterActivity.this.startActivity(myIntent);
+        if (Profile.getCurrentProfile() != null) {
+            final String id = Profile.getCurrentProfile().getId();
+            System.out.println("fb access id: " + id);
+            if (id != null) {
+                // user already logged in in fb ->
+                Intent myIntent = new Intent(LoginOrRegisterActivity.this, MapActivity.class);
+                LoginOrRegisterActivity.this.startActivity(myIntent);
+            }
         }
-
 
         setContentView(R.layout.activity_login_or_register);
 
