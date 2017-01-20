@@ -59,7 +59,7 @@ public class Data {
                 }
             }
         };
-        downloadWebTask.execute("http://langhofer.net/yellowdesks/hosts.json");
+        downloadWebTask.execute("https://yellowdesks.com/hosts");
         System.out.println("sent download request");
     }
 
