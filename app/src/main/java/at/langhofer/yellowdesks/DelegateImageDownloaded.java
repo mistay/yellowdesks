@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 public interface DelegateImageDownloaded {
         public void imageDownloaded(android.graphics.Bitmap result);

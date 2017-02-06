@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 import android.graphics.Bitmap;
 

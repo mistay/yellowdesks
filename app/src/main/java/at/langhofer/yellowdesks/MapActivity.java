@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,8 +24,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
+import at.langhofer.yellowdesks.R;
+
 import static android.R.attr.value;
-import static at.langhofer.yellowdesks3.R.id.map;
+import static at.langhofer.yellowdesks.R.id.map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 

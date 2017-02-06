@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -16,6 +16,8 @@ import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 
 import java.security.MessageDigest;
+
+import at.langhofer.yellowdesks.R;
 
 import static android.R.attr.value;
 

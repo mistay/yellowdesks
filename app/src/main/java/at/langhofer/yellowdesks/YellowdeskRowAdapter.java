@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.graphics.drawable.BitmapDrawable;
 
 import java.util.List;
+
+import at.langhofer.yellowdesks.R;
 
 import static java.lang.String.format;
 

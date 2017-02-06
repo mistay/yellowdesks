@@ -1,10 +1,12 @@
-package at.langhofer.yellowdesks3;
+package at.langhofer.yellowdesks;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import at.langhofer.yellowdesks.R;
 
 public class DetailActivity extends AppCompatActivity {
 

@@ -8,7 +8,7 @@
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    tools:context="at.langhofer.yellowdesks3.ResultsActivity"
+    tools:context="at.langhofer.yellowdesks3.at.langhofer.yellowdesks.ResultsActivity"
     android:padding="0dp">
 
     <ListView
