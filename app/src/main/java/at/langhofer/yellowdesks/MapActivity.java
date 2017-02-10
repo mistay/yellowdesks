@@ -24,8 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-import at.langhofer.yellowdesks.R;
-
 import static android.R.attr.value;
 import static at.langhofer.yellowdesks.R.id.map;
 
@@ -37,6 +35,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
 
 
 

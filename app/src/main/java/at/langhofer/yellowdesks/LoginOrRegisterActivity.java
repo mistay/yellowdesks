@@ -17,8 +17,6 @@ import com.facebook.appevents.AppEventsLogger;
 
 import java.security.MessageDigest;
 
-import at.langhofer.yellowdesks.R;
-
 import static android.R.attr.value;
 
 
@@ -62,7 +60,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 LoginOrRegisterActivity.this.startActivity(myIntent);
             }
         }
-
         setContentView(R.layout.activity_login_or_register);
 
         final Button btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -74,7 +71,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             }
         });
 
-
         final Button btnRegister = (Button) findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -84,21 +80,20 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             }
         });
 
-
-
-
         image1 = (ImageView)findViewById(R.id.imageView);
         imageArray = new int[8];
-        imageArray[0] = R.drawable.start01;
-        imageArray[1] = R.drawable.twocoworkers;
-        imageArray[2] = R.drawable.alex;
+        imageArray[0] = R.drawable.domore;
+        imageArray[1] = R.drawable.eva;
+        imageArray[2] = R.drawable.event;
+        imageArray[3] = R.drawable.gelb;
+        imageArray[4] = R.drawable.map;
+        imageArray[5] = R.drawable.per;
+        imageArray[6] = R.drawable.team;
+        imageArray[7] = R.drawable.todo;
 
         startIndex = 0;
         endIndex = 2;
         nextImage();
-
-
-
     }
 
     public void nextImage(){
@@ -118,7 +113,6 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
             }
         },2000);
-
     }
     public void previousImage(){
         image1.setImageResource(imageArray[currentIndex]);
@@ -136,6 +130,5 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 }
             }
         },2000);
-
     }
 }

@@ -18,7 +18,7 @@
             android:layout_alignParentStart="true"
             android:padding="0dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/start01"
+            android:src="@drawable/team"
             tools:ignore="ContentDescription" />
 
 
