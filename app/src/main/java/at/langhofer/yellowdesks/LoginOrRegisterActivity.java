@@ -25,7 +25,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     private int[] imageArray;
     private int currentIndex;
     private int startIndex;
-    private int endIndex;
+    private int endIndex = 0;
 
 
     @Override
@@ -82,17 +82,16 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
         image1 = (ImageView)findViewById(R.id.imageView);
         imageArray = new int[8];
-        imageArray[0] = R.drawable.domore;
-        imageArray[1] = R.drawable.eva;
-        imageArray[2] = R.drawable.event;
-        imageArray[3] = R.drawable.gelb;
-        imageArray[4] = R.drawable.map;
-        imageArray[5] = R.drawable.per;
-        imageArray[6] = R.drawable.team;
-        imageArray[7] = R.drawable.todo;
+        imageArray[endIndex++] = R.drawable.domore;
+        imageArray[endIndex++] = R.drawable.eva;
+        imageArray[endIndex++] = R.drawable.event;
+        imageArray[endIndex++] = R.drawable.map;
+        imageArray[endIndex++] = R.drawable.per;
+        imageArray[endIndex++] = R.drawable.team;
+        imageArray[endIndex++] = R.drawable.todo;
 
         startIndex = 0;
-        endIndex = 2;
+        endIndex--;
         nextImage();
     }
 
