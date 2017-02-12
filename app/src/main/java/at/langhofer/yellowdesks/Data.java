@@ -11,7 +11,43 @@ import java.util.List;
 public class Data {
     List<Host> arrayOfList = new ArrayList<Host>();
 
+    LoginDetails loginDetails = null;
+
     private Data() {
+    }
+
+    public void login(String username, final String password, final TaskDelegate downloadFinished) {
+        DownloadWebTask downloadWebTask = new DownloadWebTask();
+        downloadWebTask.delegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String raw) {
+                if (raw != null && raw != "") {
+                    try {
+                        JSONObject value = new JSONObject(raw);
+                        System.out.println("building new Login. error ?");
+                        System.out.println( value.getString("error") );
+
+                        loginDetails = new LoginDetails();
+                        loginDetails.username = value.getString("username");
+                        loginDetails.password = password;
+                        loginDetails.firstname = value.getString("firstname");
+                        loginDetails.lastname = value.getString("lastname");
+
+
+                        System.out.println("debugging new LoginDetails");
+                        loginDetails.debug();
+                        System.out.println("eof debugging new LoginDetails()");
+                    } catch (Exception e) {
+                        System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
+                    }
+                }
+
+                // notify GUI
+                downloadFinished.taskCompletionResult("");
+            }
+        };
+        downloadWebTask.execute("https://yellowdesks.com/users/login?username=" + username + "&password=" + password);
+        System.out.println("sent login request");
     }
 
     public void downloadImage(final Host host, final DelegateImageDownloaded downloadFinished) {
@@ -55,6 +91,7 @@ public class Data {
                         System.out.println("could not parse json: " + raw + ". exception: " + e.toString());
                     }
 
+                    // notify GUI
                     downloadFinished.taskCompletionResult("");
                 }
             }

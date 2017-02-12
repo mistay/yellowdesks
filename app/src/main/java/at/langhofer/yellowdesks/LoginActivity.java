@@ -5,6 +5,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -104,13 +107,46 @@ public class LoginActivity extends AppCompatActivity implements ConnectionCallba
 
         System.out.println("access token: " + AccessToken.getCurrentAccessToken() );
 
-        // facebook login button//
-
-        final LoginButton btnF = (LoginButton) findViewById(R.id.btnLoginFacebook);
-
         final TextView txtLoginStatus = (TextView) findViewById(R.id.txtLoginStatus);
 
+        // facebook login button//
+        final LoginButton btnF = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
+        // regular (non-facebook) login button
+        final Button btnLoginBackend = (Button) findViewById(R.id.btnLoginBackend);
+        final EditText txtLoginEmail = (EditText) findViewById(R.id.txtLoginEmail);
+        final EditText txtLoginPassword = (EditText) findViewById(R.id.txtLoginPassword);
+
+
+        // hook up data ready
+        final TaskDelegate taskDelegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String result) {
+                // data is ready
+                System.out.println( "data ready" );
+
+                LoginDetails loginDetails = Data.getInstance().loginDetails;
+
+                if (loginDetails.username != "") {
+                    System.out.println( "login successful, redirecting to map" );
+
+
+                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
+                    LoginActivity.this.startActivity( myIntent );
+                } else  {
+                    System.out.println( "login unsuccessful, stay here and display error (TODO)" );
+
+                }
+
+            }
+        };
+
+        btnLoginBackend.setOnClickListener( new View.OnClickListener() {
+            public void onClick(View v) {
+                Data d = Data.getInstance();
+                d.login(txtLoginEmail.getText().toString(), txtLoginPassword.getText().toString(), taskDelegate);
+            }
+        });
 
         btnF.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override

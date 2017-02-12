@@ -65,7 +65,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         final Button btnLogin = (Button) findViewById(R.id.btnLogin);
             btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //
+                System.out.println("login button pressed");
                 Intent myIntent = new Intent(LoginOrRegisterActivity.this, LoginActivity.class);
                 LoginOrRegisterActivity.this.startActivity(myIntent);
             }
