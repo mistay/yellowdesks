@@ -8,15 +8,52 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static at.langhofer.yellowdesks.LoginDetails.username;
+
+
 public class Data {
     List<Host> arrayOfList = new ArrayList<Host>();
-
     LoginDetails loginDetails = null;
+
+    private static Data _instance = null;
+    public static Data getInstance() {
+        if (_instance == null)
+            _instance = new Data();
+
+        return _instance;
+    }
 
     private Data() {
     }
 
-    public void login(String username, final String password, final TaskDelegate downloadFinished) {
+    public void sendBookingRequest(Host host, java.util.Date date, final TaskDelegate downloadFinished) {
+        DownloadWebTask downloadWebTask = new DownloadWebTask();
+        downloadWebTask.delegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String raw) {
+                if (raw != null && raw != "") {
+
+                    System.out.println("sendBookingRequest json: " + raw );
+
+                    try {
+                        JSONObject value = new JSONObject(raw);
+
+                        //username = value.getString("username");
+
+                        System.out.println("eof debugging new taskCompletionResult()");
+                    } catch (Exception e) {
+                        System.out.println("could not parse sendBookingRequest json: " + raw + ". exception: " + e.toString());
+                    }
+                }
+
+                // notify GUI
+                downloadFinished.taskCompletionResult("OK");
+            }
+        };
+        downloadWebTask.execute("https://yellowdesks.com/bookings/?username=" + username + "&password=" + "1234" + "&host_id=" + host.getId() + "&date=" + "20170101");
+    }
+
+    public void login(final String username, final String password, final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {
             @Override
@@ -102,13 +139,6 @@ public class Data {
         System.out.println("sent download request");
     }
 
-    private static Data _instance = null;
-    public static Data getInstance() {
-        if (_instance == null)
-            _instance = new Data();
-
-        return _instance;
-    }
 
     public List<Host> getData() {
         return arrayOfList;

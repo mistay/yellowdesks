@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import static at.langhofer.yellowdesks.R.id.btnLogin;
-
 public class DetailActivity extends AppCompatActivity {
 
     @Override
@@ -27,7 +25,7 @@ public class DetailActivity extends AppCompatActivity {
 
         System.out.println("DetailActivity. on create, hostId:" + hostId);
 
-        Host host = Data.getInstance().getHost(hostId);
+        final Host host = Data.getInstance().getHost(hostId);
 
         if (host == null) {
             System.out.println("DetailActivity::onCreate: host was null wtf? :(");
@@ -78,6 +76,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("btnBookNow button clicked");
                 Intent myIntent = new Intent(DetailActivity.this, BookingresponseActivity.class);
+                myIntent.putExtra("hostId", host.getId());
                 DetailActivity.this.startActivity(myIntent);
             }
         });
