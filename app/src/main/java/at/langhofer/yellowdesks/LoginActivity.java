@@ -170,6 +170,14 @@ public class LoginActivity extends AppCompatActivity implements ConnectionCallba
                                     System.out.println("realname: " + LoggedInUser.realname);
 
                                     txtLoginStatus.setText("Logged in user: " + LoggedInUser.email);
+
+                                    //todo (important!): check in backend if login succeeded
+                                    // Data.getInstance().loginViaFacebook(LoggedInUser.email);
+
+                                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
+                                    LoginActivity.this.startActivity( myIntent );
+
+
                                 } catch (Exception e) {
                                     System.out.println("exc: " + e.toString());
                                 }

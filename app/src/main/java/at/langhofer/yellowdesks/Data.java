@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static at.langhofer.yellowdesks.LoginDetails.username;
-
 
 public class Data {
     List<Host> arrayOfList = new ArrayList<Host>();
@@ -31,6 +29,7 @@ public class Data {
         downloadWebTask.delegate = new TaskDelegate() {
             @Override
             public void taskCompletionResult(String raw) {
+                boolean success = false;
                 if (raw != null && raw != "") {
 
                     System.out.println("sendBookingRequest json: " + raw );
@@ -38,19 +37,19 @@ public class Data {
                     try {
                         JSONObject value = new JSONObject(raw);
 
-                        //username = value.getString("username");
+                        success = value.getBoolean("success");
 
-                        System.out.println("eof debugging new taskCompletionResult()");
+                        System.out.println("eof debugging new taskCompletionResult(): " + success);
                     } catch (Exception e) {
                         System.out.println("could not parse sendBookingRequest json: " + raw + ". exception: " + e.toString());
                     }
                 }
 
                 // notify GUI
-                downloadFinished.taskCompletionResult("OK");
+                downloadFinished.taskCompletionResult(success ? "OK" : "NG");
             }
         };
-        downloadWebTask.execute("https://yellowdesks.com/bookings/?username=" + username + "&password=" + "1234" + "&host_id=" + host.getId() + "&date=" + "20170101");
+        downloadWebTask.execute( String.format("https://yellowdesks.com/bookings/bookingrequest/?username=%s&password=%s&host_id=%d&date=%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password, host.getId(), "20170101"));
     }
 
     public void login(final String username, final String password, final TaskDelegate downloadFinished) {

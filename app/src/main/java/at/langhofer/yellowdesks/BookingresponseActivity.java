@@ -2,6 +2,7 @@ package at.langhofer.yellowdesks;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 public class BookingresponseActivity extends AppCompatActivity {
 
@@ -9,6 +10,8 @@ public class BookingresponseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookingresponse);
+
+        final TextView tvBookingresponse = (TextView) findViewById(R.id.tvBookingresponse);
 
         Bundle b = getIntent().getExtras();
         long hostId = -1;
@@ -31,12 +34,14 @@ public class BookingresponseActivity extends AppCompatActivity {
                 System.out.println( "data ready" );
 
                 if (result == "OK") {
-                    System.out.println("GUI: todo show success screen");
+                    tvBookingresponse.setText("Successfully booked your Yellow Desk!");
                 }
-
-
             }
         };
+
+
+        tvBookingresponse.setText("Requesting booking from server...");
+
         Data.getInstance().sendBookingRequest(host, new java.util.Date(), taskDelegate);
     }
 }
