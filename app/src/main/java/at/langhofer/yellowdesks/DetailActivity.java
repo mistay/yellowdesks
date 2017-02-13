@@ -1,6 +1,8 @@
 package at.langhofer.yellowdesks;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -43,5 +45,26 @@ public class DetailActivity extends AppCompatActivity {
 
         if (host.getBitmap()!=null)
             detailImage.setImageDrawable(new BitmapDrawable(host.getBitmap()));
+        else {
+            DelegateImageDownloaded downloadFinished = new DelegateImageDownloaded() {
+                @Override
+                public void imageDownloaded(Bitmap result) {
+                    if (result != null) {
+                        System.out.println("imageDownloaded, result: " + result.toString());
+
+                        Drawable myDrawable = new BitmapDrawable(result);
+                        detailImage.setImageDrawable(myDrawable);
+                    } else {
+                        System.out.println("DelegateImageDownloaded downloadFinished but result was null :(");
+                    }
+                }
+            };
+
+            System.out.println("downloadImage. id: " + host.getId() + " url: " +  host.getImageURL() + " isnull? " + ( host.getImageURL() == null));
+            if (host.getImageURL() != null)
+                Data.getInstance().downloadImage(host, downloadFinished);
+        }
+
+
     }
 }
