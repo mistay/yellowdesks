@@ -79,7 +79,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             // retreive host from marker
                             Host host = (Host) marker.getTag();
                             System.out.println("opening detail activity with key: " + host.getId());
-                            myIntent.putExtra( "key", host.getId() );
+                            myIntent.putExtra( "hostId", host.getId() );
 
                             MapActivity.this.startActivity( myIntent );
                             return false;

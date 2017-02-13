@@ -15,12 +15,17 @@ public class DetailActivity extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         long hostId = -1;
-        if(b != null)
-            hostId = b.getLong("key");
+        if (b != null)
+            hostId = b.getLong("hostId");
 
         System.out.println("DetailActivity. on create, hostId:" + hostId);
 
         Host host = Data.getInstance().getHost(hostId);
+
+        if (host == null) {
+            System.out.println("DetailActivity::onCreate: host was null wtf? :(");
+            return;
+        }
 
         final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
         textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
