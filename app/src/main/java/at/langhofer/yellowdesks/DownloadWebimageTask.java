@@ -21,9 +21,15 @@ public class DownloadWebimageTask extends AsyncTask<String, Void, String> {
         System.out.println("trying to download url: " + urls[0]);
 
         try {
-            System.out.println("trying to dlownload image..");
+            System.out.println("trying to download image..");
             bitmap = downloadUrl(urls[0]);
-            System.out.println("done downloading image. width: " + bitmap.getWidth());
+            System.out.println("done downloading image.");
+            if (bitmap != null) {
+                System.out.println("image width: " + bitmap.getWidth());
+            }
+            else {
+                System.out.println("image was null :(");
+            }
         } catch (IOException e) {
             System.out.println("could not download url: " + urls[0] + ". exception: " + e.toString());
         }

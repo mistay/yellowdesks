@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import at.langhofer.yellowdesks.R;
-
 public class ResultsActivity extends AppCompatActivity {
 
 
@@ -25,10 +23,14 @@ public class ResultsActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                System.out.println("clicked item" + i);
+                System.out.println("clicked item" + i + " long: " + l);
+
+                Host host = (Host) adapterView.getItemAtPosition(i);
+                System.out.println("clicked item" + host.getId() );
 
                 Intent myIntent = new Intent(ResultsActivity.this, DetailActivity.class);
-                myIntent.putExtra("itemclicked", i); //Optional parameters
+                myIntent.putExtra("hostId", host.getId());
+
                 ResultsActivity.this.startActivity(myIntent);
             }
         });
