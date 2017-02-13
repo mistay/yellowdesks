@@ -32,8 +32,8 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
-        System.out.println("getView()");
+        // wird immer (wieder mal) aufgerufen, wenn das view gui-control weitere
+        // hosts (vorallem: images) nachlaedt ...
 
         View view = convertView;
         final ViewHolder holder;
@@ -59,31 +59,25 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
 
         holder.deskstatus.setText(format("%s: Yellow Desks: %d/%d", host.getHost(), host.gettotalDesks(), host.getAvailableDesks()));
 
-        Drawable myDrawable = null;
-
         Bitmap bitmap = host.getBitmap();
-
-
-
 
         if (bitmap != null) {
             holder.imgView.setImageDrawable(new BitmapDrawable(bitmap));
         } else {
-
-            // muss man machen, sonst werden die images mit gecachten bildern geladen.
+            // muss man explizit auf null, sonst werden die images mit ge-cache-ten bildern angezeigt (view-bug?).
             holder.imgView.setImageDrawable(null);
 
             DelegateImageDownloaded downloadFinished = new DelegateImageDownloaded() {
                 @Override
                 public void imageDownloaded(Bitmap result) {
-                    if (result != null) {
-                        System.out.println("imageDownloaded, result: " + result.toString());
+                if (result != null) {
+                    System.out.println("imageDownloaded, result: " + result.toString());
 
-                        Drawable myDrawable = new BitmapDrawable(result);
-                        holder.imgView.setImageDrawable(myDrawable);
-                    } else {
-                        System.out.println("DelegateImageDownloaded downloadFinished but result was null :(");
-                    }
+                    Drawable myDrawable = new BitmapDrawable(result);
+                    holder.imgView.setImageDrawable(myDrawable);
+                } else {
+                    System.out.println("DelegateImageDownloaded downloadFinished but result was null :(");
+                }
                 }
             };
 
@@ -91,13 +85,6 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
             if (host.getImageURL() != null)
                 Data.getInstance().downloadImage(host, downloadFinished);
         }
-/*
-        myDrawable = view.getContext().getResources().getDrawable(R.drawable.alex);
-        if ((position % 2) == 0) {
-            myDrawable = view.getContext().getResources().getDrawable(R.drawable.twocoworkers);
-        }
-        holder.imgView.setImageDrawable(myDrawable);
-*/
 
         return view;
     }
