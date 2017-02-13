@@ -80,7 +80,9 @@ public class Data {
                             System.out.println("building new Host()");
                             String details = value.getString("details");
                             String title = value.getString("title");
-                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), value.getString("imageURL"), details, title);
+
+                            String imageURL = value.getString("imageURL").toLowerCase().startsWith("null") ? null : value.getString("imageURL");
+                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), imageURL, details, title);
 
                             System.out.println("debugging new Host()");
                             h.debug();
