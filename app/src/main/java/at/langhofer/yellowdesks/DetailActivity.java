@@ -1,12 +1,17 @@
 package at.langhofer.yellowdesks;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import static at.langhofer.yellowdesks.R.id.btnLogin;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -64,6 +69,18 @@ public class DetailActivity extends AppCompatActivity {
             if (host.getImageURL() != null)
                 Data.getInstance().downloadImage(host, downloadFinished);
         }
+
+
+
+
+        final Button btnBookNow = (Button) findViewById(R.id.btnBookNow);
+        btnBookNow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("btnBookNow button clicked");
+                Intent myIntent = new Intent(DetailActivity.this, BookingresponseActivity.class);
+                DetailActivity.this.startActivity(myIntent);
+            }
+        });
 
 
     }

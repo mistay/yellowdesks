@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="at.langhofer.yellowdesks.LoginOrRegisterActivity">
+        <activity android:name=".LoginOrRegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +48,7 @@
         <!-- facebook login -->
 
         <activity
-            android:name="at.langhofer.yellowdesks.MapActivity"
+            android:name=".MapActivity"
             android:label="@string/title_activity_map" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -62,8 +62,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="at.langhofer.yellowdesks.ResultsActivity" />
-        <activity android:name="at.langhofer.yellowdesks.DetailActivity" />
+        <activity android:name=".ResultsActivity" />
+        <activity android:name=".DetailActivity" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -75,7 +75,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name="at.langhofer.yellowdesks.LoginActivity"></activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".BookingresponseActivity"></activity>
     </application>
 
 </manifest>
