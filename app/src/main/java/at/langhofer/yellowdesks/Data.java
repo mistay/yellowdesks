@@ -112,4 +112,11 @@ public class Data {
         return arrayOfList;
     }
 
+    public Host getHost(Long hostId) {
+        for (Host host: arrayOfList) {
+            if (host.getId() == hostId)
+                return host;
+        }
+        return null;
+    }
 }

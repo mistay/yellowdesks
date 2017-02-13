@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import at.langhofer.yellowdesks.R;
-
 public class DetailActivity extends AppCompatActivity {
 
     @Override
@@ -16,13 +14,13 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Bundle b = getIntent().getExtras();
-        int value = -1; // or other values
+        long hostId = -1;
         if(b != null)
-            value = b.getInt("itemclicked");
+            hostId = b.getLong("key");
 
-        System.out.println("on create, clicked:" + value);
+        System.out.println("DetailActivity. on create, hostId:" + hostId);
 
-        Host host = Data.getInstance().getData().get(value);
+        Host host = Data.getInstance().getHost(hostId);
 
         final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
         textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());

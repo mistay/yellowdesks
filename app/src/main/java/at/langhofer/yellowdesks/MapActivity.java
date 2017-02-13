@@ -62,20 +62,30 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 System.out.println("data ready");
 
                 List<Host> hosts = Data.getInstance().getData();
-                for (final Host host : hosts) {
+                for (Host host : hosts) {
                     LatLng latlng = new LatLng( host.getLat(), host.getLng() );
                     System.out.println("new latlng: " + latlng.toString());
-                    mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
+                    Marker myMarker = mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
 
-                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    // attaching host to marker to retreive in OnMarkerClickListener
+                    myMarker.setTag(host);
+
+
+                    GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
                             Intent myIntent = new Intent( MapActivity.this, DetailActivity.class );
-                            myIntent.putExtra( "key", host.getId() ); //Optional parameters
+
+                            // retreive host from marker
+                            Host host = (Host) marker.getTag();
+                            System.out.println("opening detail activity with key: " + host.getId());
+                            myIntent.putExtra( "key", host.getId() );
+
                             MapActivity.this.startActivity( myIntent );
                             return false;
                         }
-                    });
+                    };
+                    mMap.setOnMarkerClickListener(onMarkerClickListener);
                 }
             }
         };
