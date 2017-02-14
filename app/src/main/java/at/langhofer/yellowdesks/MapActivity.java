@@ -131,8 +131,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         } catch (SecurityException e) { System.out.println("sec exception " + e.toString() );}
 
 
-        // disable zoom controls to make space for "open now" and "list" buttons
-        mMap.getUiSettings().setZoomControlsEnabled(false);
+
 
 
     }
@@ -195,7 +194,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         System.out.println("starting download...");
         data.downloadHosts(taskDelegate);
 
-        mMap.getUiSettings().setZoomControlsEnabled( true );
+        // disable zoom controls to make space for "open now" and "list" buttons
+        mMap.getUiSettings().setZoomControlsEnabled( false );
+
         mMap.getUiSettings().setAllGesturesEnabled( true );
         mMap.getUiSettings().setZoomGesturesEnabled( true );
 

@@ -122,6 +122,7 @@ public class Data {
                             JSONObject value = jsonArray.getJSONObject(i);
                             System.out.println("building new Host()");
                             String details = value.getString("details");
+                            String extras = value.getString("extras");
                             String title = value.getString("title");
 
                             String imageURL = value.getString("imageURL").toLowerCase().startsWith("null") ? null : value.getString("imageURL");
@@ -129,7 +130,34 @@ public class Data {
                             String videoURL = value.getString("videoURL");
                             videoURL = videoURL.toLowerCase().trim() == "null" ? null : videoURL;
 
-                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), imageURL, details, title, videoURL);
+                            System.out.println("1day" + value.getString("price_1day"));
+                            System.out.println("10day" + value.getString("price_10days"));
+                            System.out.println("1month" + value.getString("price_1month"));
+                            System.out.println("6months" + value.getString("price_6months"));
+
+                            Float price_1day = value.getString("price_1day").equals("null") ? null :  Float.parseFloat(value.getString("price_1day"));
+                            Float price_10days = value.getString("price_10days").equals("null") ? null :  Float.parseFloat(value.getString("price_10days"));
+                            Float price_1month = value.getString("price_1month").equals("null") ? null :  Float.parseFloat(value.getString("price_1month"));
+                            Float price_6months =  value.getString("price_6months").equals("null") ? null :  Float.parseFloat(value.getString("price_6months"));
+
+                            Host h = new Host(
+                                    Long.parseLong(value.getString("id")),
+                                    value.getString("host"),
+                                    Integer.parseInt(value.getString("desks")),
+                                    Integer.parseInt(value.getString("desks_avail")),
+                                    Double.parseDouble( value.getString("lat")),
+                                    Double.parseDouble( value.getString("lng")),
+                                    imageURL,
+                                    details,
+                                    extras,
+                                    value.getString("open_from") == "null" ? null : value.getString("open_from"),
+                                    value.getString("open_till") == "null" ? null : value.getString("open_till"),
+                                    price_1day,
+                                    price_10days,
+                                    price_1month,
+                                    price_6months,
+                                    title,
+                                    videoURL);
 
                             System.out.println("debugging new Host()");
                             h.debug();
@@ -142,6 +170,8 @@ public class Data {
 
                     // notify GUI
                     downloadFinished.taskCompletionResult("");
+
+                    System.out.println("done loading hosts");
                 }
             }
         };

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 
 /**
@@ -24,6 +25,9 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
             // params comes from the execute() call: params[0] is the url
             System.out.println("trying to download url: " + urls[0]);
             String raw=null;
+
+
+
             try {
                 raw = downloadUrl(urls[0]);
 
@@ -35,9 +39,7 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-
             delegate.taskCompletionResult(result);
-
             System.out.println("download finished: " + result);
         }
 
@@ -63,6 +65,17 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
         try {
             URL url = new URL(myurl);
+
+            try {
+                InetAddress[] addresses = InetAddress.getAllByName( url.getHost() );
+                for (InetAddress i : addresses)
+                    System.out.println(String.format("ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress()));
+            } catch (Exception e) {
+                System.out.println("Exception while resolving hostname: " +  e.toString() );
+            }
+
+
+
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
@@ -75,7 +88,7 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
             // Convert the InputStream into a string
             String contentAsString = readIt(is);
-            System.out.println("contentasstring: " + contentAsString);
+            //System.out.println("contentasstring: " + contentAsString);
             return contentAsString;
 
             // Makes sure that the InputStream is closed after the app is

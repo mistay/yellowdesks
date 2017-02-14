@@ -41,12 +41,28 @@ public class DetailActivity extends AppCompatActivity {
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
         textviewDetail.setText("Included: " + host.getDetails());
 
+        final TextView tvExtras = (TextView) findViewById(R.id.tvExtras);
+        tvExtras.setText("Included: " + host.getExtras());
+
+
         final TextView tvOpeninghours = (TextView) findViewById(R.id.tvOpeninghours);
-        tvOpeninghours.setText("Opening Hours: Mo-Fr 08.00-18.00h");
+        if (host.getOpenFrom() == null)
+            tvOpeninghours.setText(String.format("Opening Hours: n/a"));
+        else
+            tvOpeninghours.setText(String.format("Opening Hours: Mon %s till Sun %s", host.getOpenFrom(), host.getOpenTill()));
+
+        StringBuilder tmp= new StringBuilder();
+        if (host.getPrice1Day() != null)
+            tmp.append ( String.format("1 day: %s EUR\n" , host.getPrice1Day()));
+        if (host.getPrice1Day() != null)
+            tmp.append ( String.format("10 days: %s EUR\n" , host.getPrice10Days()));
+        if (host.getPrice1Day() != null)
+            tmp.append ( String.format("1 month: %s EUR\n" , host.getPrice1Month()));
+        if (host.getPrice1Day() != null)
+            tmp.append ( String.format("6 months: %s EUR\n" , host.getPrice6Months()));
 
         final TextView tvPrices = (TextView) findViewById(R.id.tvPrices);
-        tvPrices.setText("1 day: 15EUR");
-
+        tvPrices.setText("Prices: " + ((tmp.length() == 0) ? "n/a" : "\n" + tmp.toString()));
 
         final TextView hostDetails = (TextView) findViewById(R.id.txt_hostdetails);
         hostDetails.setText( String.format("%s\n%s desks available", host.getTitle(), host.getAvailableDesks()) );
