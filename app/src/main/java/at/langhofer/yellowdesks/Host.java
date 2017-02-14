@@ -2,6 +2,8 @@ package at.langhofer.yellowdesks;
 
 import android.graphics.Bitmap;
 
+import java.util.LinkedList;
+
 public class Host {
     private Long id = null;
     private String host = null;
@@ -10,7 +12,9 @@ public class Host {
     private double lat = Integer.MIN_VALUE;
     private double lng = Integer.MIN_VALUE;
     private String imageURL = "";
-    private Bitmap bitmap = null;
+    private LinkedList<Bitmap> bitmaps = new LinkedList<Bitmap>();
+    private String videoURL = null;
+
 
 
     // e.g. "Highspeed Interhet, Küche, Besprechungsraum, ..."
@@ -23,7 +27,7 @@ public class Host {
         // do not allow new Item()
     }
 
-    public Host( Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, String details, String title) {
+    public Host( Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, String details, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -33,6 +37,7 @@ public class Host {
         this.imageURL = imageURL;
         this.details = details;
         this.title = title;
+        this.videoURL = videoURL;
     }
 
     public void debug() {
@@ -56,9 +61,15 @@ public class Host {
     public String getImageURL() { return imageURL; }
 
     public String getDetails() { return details; }
+    public String getTitle() { return title; }
 
-    public Bitmap getBitmap() { return bitmap; }
-    public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
+
+    public Bitmap getBitmap() { return bitmaps.size()>0 ? bitmaps.get(0) : null; }
+    public LinkedList<Bitmap> getBitmaps() { return bitmaps; }
+
+    public String getVideoURL() { return videoURL; }
+
+    public void setBitmap(Bitmap bitmap) { this.bitmaps.add(bitmap); }
 
     public String getHostDetails() {
         return "Host:" + host + "<br >" +  title;

@@ -118,7 +118,11 @@ public class Data {
                             String title = value.getString("title");
 
                             String imageURL = value.getString("imageURL").toLowerCase().startsWith("null") ? null : value.getString("imageURL");
-                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), imageURL, details, title);
+
+                            String videoURL = value.getString("videoURL");
+                            videoURL = videoURL.toLowerCase().trim() == "null" ? null : videoURL;
+
+                            Host h = new Host(Long.parseLong(value.getString("id")), value.getString("host"), Integer.parseInt(value.getString("desks")), Integer.parseInt(value.getString("desks_avail")), Double.parseDouble( value.getString("lat")), Double.parseDouble( value.getString("lng")), imageURL, details, title, videoURL);
 
                             System.out.println("debugging new Host()");
                             h.debug();

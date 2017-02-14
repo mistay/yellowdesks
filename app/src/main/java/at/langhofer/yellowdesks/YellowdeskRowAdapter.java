@@ -57,7 +57,7 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
         holder.deskstatus = (TextView) view.findViewById(R.id.deskstatus);
         holder.imgView = (ImageView) view.findViewById(R.id.resultimage);
 
-        holder.deskstatus.setText(format("%s: Yellow Desks: %d/%d", host.getHost(), host.gettotalDesks(), host.getAvailableDesks()));
+        holder.deskstatus.setText(format("%s <br /> %d desks available", host.getTitle(), host.getAvailableDesks()));
 
         Bitmap bitmap = host.getBitmap();
 

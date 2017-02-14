@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -80,6 +83,24 @@ public class DetailActivity extends AppCompatActivity {
                 DetailActivity.this.startActivity(myIntent);
             }
         });
+
+        final VideoView vvHost = (VideoView) findViewById(R.id.vvHost);
+        vvHost.setVisibility(View.GONE);
+        if (host.getVideoURL() != null) {
+            System.out.println("trying to play video: " + host.getVideoURL());
+
+            Uri uri = Uri.parse(host.getVideoURL());
+            if (uri != null) {
+                vvHost.setVisibility(View.VISIBLE);
+                System.out.println("setting up video: " + host.getVideoURL());
+                vvHost.setMediaController(new MediaController(this));
+                vvHost.setVideoURI(uri);
+                vvHost.requestFocus();
+                vvHost.start();
+            }
+        }
+
+
 
 
     }

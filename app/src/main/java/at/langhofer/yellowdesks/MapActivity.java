@@ -105,8 +105,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         circleOptions.center(salzburgdowntown);
         circleOptions.radius(1000);
 
-        circleOptions.fillColor(Color.argb(50, 50,50,0));
-        circleOptions.strokeColor(Color.YELLOW);
+        circleOptions.fillColor(Color.argb(100, 249, 233, 63)); // yellow
+        circleOptions.strokeColor(Color.argb(100, 249, 233, 63)); // yellow
         circleOptions.strokeWidth(2);
 
         mMap.addCircle(circleOptions);
