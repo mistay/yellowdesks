@@ -2,6 +2,7 @@ package at.langhofer.yellowdesks;
 
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +24,10 @@ public class Data {
     }
 
     private Data() {
+    }
+
+    public static int colorYellowdesks() {
+        return Color.argb(100, 249, 233, 63);
     }
 
 

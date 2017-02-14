@@ -41,8 +41,12 @@ public class DetailActivity extends AppCompatActivity {
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
         textviewDetail.setText("Included: " + host.getDetails());
 
+        //View root = textviewDetail.getRootView();
+        //getWindow().getDecorView().setBackgroundColor(Data.colorYellowdesks());
+        //root.setBackgroundColor(  Data.colorYellowdesks()  );
+
         final TextView tvExtras = (TextView) findViewById(R.id.tvExtras);
-        tvExtras.setText("Included: " + host.getExtras());
+        tvExtras.setText("Extra: " + host.getExtras());
 
 
         final TextView tvOpeninghours = (TextView) findViewById(R.id.tvOpeninghours);

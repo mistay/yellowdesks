@@ -110,8 +110,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 circleOptions.center(currentlocation);
                 circleOptions.radius(1000);
 
-                circleOptions.fillColor(Color.argb(100, 249, 233, 63)); // yellow
-                circleOptions.strokeColor(Color.argb(100, 249, 233, 63)); // yellow
+                circleOptions.fillColor(Data.colorYellowdesks()); // yellow
+                circleOptions.strokeColor(Data.colorYellowdesks()); // yellow
                 circleOptions.strokeWidth(2);
 
                 youMarker.remove();
