@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -130,6 +131,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         } catch (SecurityException e) { System.out.println("sec exception " + e.toString() );}
 
 
+        // disable zoom controls to make space for "open now" and "list" buttons
+        mMap.getUiSettings().setZoomControlsEnabled(false);
 
 
     }
@@ -262,6 +265,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     .build();
         }
         System.out.println("attacced google api client");
+
+
+
+        TextView tvByMap = (TextView)findViewById(R.id.tvByMap);
+        tvByMap.setText(Data.getByString());
     }
 
 

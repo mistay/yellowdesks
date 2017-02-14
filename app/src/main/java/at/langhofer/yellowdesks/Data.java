@@ -1,5 +1,6 @@
 package at.langhofer.yellowdesks;
 
+import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 
 import org.json.JSONArray;
@@ -24,6 +25,12 @@ public class Data {
     private Data() {
     }
 
+
+    public static String version = "";
+    public static String getByString() {
+        PackageInfo pInfo = null;
+        return "by COWORKINGSALZBURG " + ((version != "") ? "(v" + version + ")" : "");
+    }
     public void sendBookingRequest(Host host, java.util.Date date, final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {

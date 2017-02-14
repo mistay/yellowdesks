@@ -35,14 +35,21 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
-        textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
+        //final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
+        //textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
 
         final TextView textviewDetail = (TextView) findViewById(R.id.textviewDetail);
-        textviewDetail.setText( host.getDetails() );
+        textviewDetail.setText("Included: " + host.getDetails());
+
+        final TextView tvOpeninghours = (TextView) findViewById(R.id.tvOpeninghours);
+        tvOpeninghours.setText("Opening Hours: Mo-Fr 08.00-18.00h");
+
+        final TextView tvPrices = (TextView) findViewById(R.id.tvPrices);
+        tvPrices.setText("1 day: 15EUR");
+
 
         final TextView hostDetails = (TextView) findViewById(R.id.txt_hostdetails);
-        hostDetails.setText("YELLOW desks: " + host.getHostDetails());
+        hostDetails.setText( String.format("%s\n%s desks available", host.getTitle(), host.getAvailableDesks()) );
 
 
         final ImageView detailImage = (ImageView) findViewById(R.id.detailimage);

@@ -10,6 +10,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
@@ -33,6 +34,11 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         System.out.println ("Starting Yellow Desks ...");
+
+
+
+
+
 // facebook login button//
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -94,6 +100,19 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         startIndex = 0;
         endIndex--;
         nextImage();
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            Data.version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        TextView tvBy = (TextView)findViewById(R.id.tvBy);
+        tvBy.setText(Data.getByString());
+
+
+
     }
 
     public void nextImage(){

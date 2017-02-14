@@ -72,6 +72,6 @@ public class Host {
     public void setBitmap(Bitmap bitmap) { this.bitmaps.add(bitmap); }
 
     public String getHostDetails() {
-        return "Host:" + host + "<br >" +  title;
+        return details;
     }
 }
