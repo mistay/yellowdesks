@@ -61,8 +61,10 @@ public class DetailActivity extends AppCompatActivity {
         if (host.getPrice1Day() != null)
             tmp.append ( String.format("6 months: %s EUR\n" , host.getPrice6Months()));
 
+
+        System.out.println("dbug: " + host.getPrice1Day());
         final TextView tvPrices = (TextView) findViewById(R.id.tvPrices);
-        tvPrices.setText("Prices: " + ((tmp.length() == 0) ? "n/a" : "\n" + tmp.toString()));
+        tvPrices.setText(String.format("Prices: %s", ((tmp.length() == 0) ? "n/a" : "\n" + tmp.toString())));
 
         final TextView hostDetails = (TextView) findViewById(R.id.txt_hostdetails);
         hostDetails.setText( String.format("%s\n%s desks available", host.getTitle(), host.getAvailableDesks()) );
