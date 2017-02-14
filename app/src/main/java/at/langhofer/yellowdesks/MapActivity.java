@@ -2,8 +2,10 @@ package at.langhofer.yellowdesks;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +13,17 @@ import android.widget.Button;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -27,7 +34,7 @@ import java.util.List;
 import static android.R.attr.value;
 import static at.langhofer.yellowdesks.R.id.map;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
     private GoogleMap mMap;
     /**
@@ -36,6 +43,66 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
      */
     private GoogleApiClient client;
 
+
+
+    private Location mLastLocation;
+    GoogleApiClient mGoogleApiClient;
+
+
+
+
+
+
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+    @Override
+    public void onConnected(Bundle connectionHint) {
+         /*
+         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            System.out.println("not enough permissions to ask for location");
+
+            System.out.println(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION));
+            System.out.println(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION));
+
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        */
+
+        try {
+            System.out.println("trying getting location" );
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                System.out.println("lng" + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
+            }
+            System.out.println("done. null?");
+            System.out.println(mLastLocation == null);
+
+        } catch (SecurityException e) { System.out.println("sec exception " + e.toString() );}
+
+
+
+
+    }
 
 
 
@@ -69,6 +136,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
                     // attaching host to marker to retreive in OnMarkerClickListener
                     myMarker.setTag(host);
+                    myMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellowdot));
 
 
                     GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
@@ -138,6 +206,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder( this ).addApi( AppIndex.API ).build();
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // retreive GEO location via google play services
+        // Create an instance of GoogleAPIClient.
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        System.out.println("attacced google api client");
     }
 
 
@@ -157,10 +248,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .build();
     }
 
+
     @Override
     public void onStart() {
-        super.onStart();
 
+        mGoogleApiClient.connect();
+        super.onStart();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -169,6 +262,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     @Override
     public void onStop() {
+        mGoogleApiClient.disconnect();
         super.onStop();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
