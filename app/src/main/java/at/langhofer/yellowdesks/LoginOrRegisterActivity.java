@@ -89,6 +89,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         imageArray[endIndex++] = R.drawable.per;
         imageArray[endIndex++] = R.drawable.team;
         imageArray[endIndex++] = R.drawable.todo;
+        imageArray[endIndex++] = R.drawable.gelb;
 
         startIndex = 0;
         endIndex--;
