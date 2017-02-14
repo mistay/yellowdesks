@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -37,6 +38,11 @@ import static at.langhofer.yellowdesks.R.id.map;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
     private GoogleMap mMap;
+    CircleOptions circleOptions;
+    Circle circle;
+
+    Marker youMarker;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -93,6 +99,30 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 System.out.println("lng" + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
+
+                LatLng currentlocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+
+                circle.remove();
+
+                circleOptions = new CircleOptions();
+
+                circleOptions.center(currentlocation);
+                circleOptions.radius(1000);
+
+                circleOptions.fillColor(Color.argb(100, 249, 233, 63)); // yellow
+                circleOptions.strokeColor(Color.argb(100, 249, 233, 63)); // yellow
+                circleOptions.strokeWidth(2);
+
+                youMarker.remove();
+                youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
+                youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
+
+
+
+                circle = mMap.addCircle(circleOptions);
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, 12 );
+                mMap.moveCamera( update );
+
             }
             System.out.println("done. null?");
             System.out.println(mLastLocation == null);
@@ -168,7 +198,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         LatLng salzburgdowntown = new LatLng( 47.806021, 13.050602000000026 );
 
-        CircleOptions circleOptions = new CircleOptions();
+        circleOptions = new CircleOptions();
 
         circleOptions.center(salzburgdowntown);
         circleOptions.radius(1000);
@@ -177,7 +207,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         circleOptions.strokeColor(Color.argb(100, 249, 233, 63)); // yellow
         circleOptions.strokeWidth(2);
 
-        mMap.addCircle(circleOptions);
+        circle = mMap.addCircle(circleOptions);
+
+        youMarker = mMap.addMarker(new MarkerOptions().position(salzburgdowntown).title("You are here!"));
+        youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
 
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom( salzburgdowntown, 12 );
         mMap.moveCamera( update );
