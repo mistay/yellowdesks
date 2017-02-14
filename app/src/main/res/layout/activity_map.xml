@@ -22,19 +22,16 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button10"
+            <ToggleButton
+                android:id="@+id/btnOpenNow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Open Now" />
+                android:textOn="Open Now"
+                android:textOff="Open Now"
+                />
 
-            <Button
-                android:id="@+id/button9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="On 24/12/16" />
+
 
             <Button
                 android:id="@+id/btnList"
