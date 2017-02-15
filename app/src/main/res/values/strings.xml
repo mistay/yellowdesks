@@ -12,4 +12,19 @@
     <string name="facebook_app_id">349857342038820</string>
     <string name="title_activity_login">LoginActivity</string>
     <!--productive-->
+
+
+    <string-array name="minutes_array">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>60</item>
+    </string-array>
+    <string-array name="vehicle_array">
+        <item>walk</item>
+        <item>by car</item>
+    </string-array>
 </resources>

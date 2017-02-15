@@ -1,14 +1,16 @@
 package at.langhofer.yellowdesks;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -43,6 +45,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     Circle circle;
 
     Marker youMarker;
+
+    LatLng currentlocation = new LatLng( 47.806021, 13.050602000000026 ); //salzburg
+
+    int circleRadius = 1000;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -101,18 +107,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             if (mLastLocation != null) {
                 System.out.println("lng" + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
 
-                LatLng currentlocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                currentlocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
-                circle.remove();
+                resizeCircle();
 
-                circleOptions = new CircleOptions();
-
-                circleOptions.center(currentlocation);
-                circleOptions.radius(1000);
-
-                circleOptions.fillColor(Data.colorYellowdesks()); // yellow
-                circleOptions.strokeColor(Data.colorYellowdesks()); // yellow
-                circleOptions.strokeWidth(2);
 
                 youMarker.remove();
                 youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
@@ -120,7 +118,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
-                circle = mMap.addCircle(circleOptions);
+
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, 12 );
                 mMap.moveCamera( update );
 
@@ -170,7 +168,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     myMarker.setTag(host);
                     myMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellowdot));
 
-
                     GoogleMap.OnMarkerClickListener onMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
@@ -200,25 +197,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.getUiSettings().setAllGesturesEnabled( true );
         mMap.getUiSettings().setZoomGesturesEnabled( true );
 
-        LatLng salzburgdowntown = new LatLng( 47.806021, 13.050602000000026 );
 
-        circleOptions = new CircleOptions();
-
-        circleOptions.center(salzburgdowntown);
-        circleOptions.radius(1000);
-
-        circleOptions.fillColor(Color.argb(100, 249, 233, 63)); // yellow
-        circleOptions.strokeColor(Color.argb(100, 249, 233, 63)); // yellow
-        circleOptions.strokeWidth(2);
-
-        circle = mMap.addCircle(circleOptions);
-
-        youMarker = mMap.addMarker(new MarkerOptions().position(salzburgdowntown).title("You are here!"));
+        youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
         youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
 
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom( salzburgdowntown, 12 );
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, 12 );
         mMap.moveCamera( update );
     }
+
+    Spinner spinner2;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,7 +259,88 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         TextView tvByMap = (TextView)findViewById(R.id.tvByMap);
         tvByMap.setText(Data.getByString());
+
+
+
+
+
+
+
+
+        spinner = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.minutes_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println("selected " + i);
+                System.out.println("selected " + spinner.getSelectedItem().toString());
+                resizeCircle();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
+                R.array.vehicle_array, android.R.layout.simple_spinner_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner2.setAdapter(adapter2);
+        spinner2.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                System.out.println("selected " + i);
+                System.out.println("selected " + spinner.getSelectedItem().toString());
+                resizeCircle();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
+
+    public void resizeCircle() {
+        System.out.println("resize: " + spinner.getSelectedItem().toString());
+        System.out.println("resize: " + spinner2.getSelectedItem().toString());
+
+        Integer minutes = Integer.parseInt(spinner.getSelectedItem().toString());
+
+        double km_per_hour = spinner2.getSelectedItem().toString().equals("walk") ? 4 : 30;
+
+
+        // gehen 4km/h lt wikpedia
+        // fahren ca 30km/h lt https://de.statista.com/statistik/daten/studie/37200/umfrage/durchschnittsgeschwindigkeit-in-den-15-groessten-staedten-der-welt-2009/
+        circleRadius = (int)( minutes * km_per_hour * 1000.0 / 60.0);
+
+        try {
+            circle.remove();
+        } catch (Exception e) {
+            System.out.println("resize circle exception: " + e.toString());
+        }
+
+        circleOptions = new CircleOptions();
+
+        circleOptions.center(currentlocation);
+        circleOptions.radius(circleRadius);
+
+        circleOptions.fillColor(Data.colorYellowdesks()); // yellow
+        circleOptions.strokeColor(Data.colorYellowdesks()); // yellow
+        circleOptions.strokeWidth(2);
+        circle = mMap.addCircle(circleOptions);
+
+
+    }
+
 
 
     /**

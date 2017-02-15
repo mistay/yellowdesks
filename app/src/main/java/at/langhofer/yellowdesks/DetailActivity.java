@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -112,6 +113,21 @@ public class DetailActivity extends AppCompatActivity {
                 DetailActivity.this.startActivity(myIntent);
             }
         });
+
+
+        final ImageButton btnBacktomap = (ImageButton) findViewById(R.id.btnBacktomap);
+        btnBacktomap.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                System.out.println("btnBacktomap button clicked");
+                Intent myIntent = new Intent( DetailActivity.this, MapActivity.class );
+                System.out.println("opening detail activity with key: " + host.getId());
+                DetailActivity.this.startActivity(myIntent);
+            }
+        });
+
+
+
+
 
         final VideoView vvHost = (VideoView) findViewById(R.id.vvHost);
         vvHost.setVisibility(View.GONE);
