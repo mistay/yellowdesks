@@ -71,25 +71,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+
+
                 android:gravity="bottom"
                 android:orientation="horizontal">
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    />
                 <ToggleButton
                     android:id="@+id/btnOpenNow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textOn="Open Now"
-                    android:textOff="Open Now"
+                    android:background="@color/yellwdesksBlack"
+
+                    android:textColor="@color/yellwdesksYellow"
+                    android:textOn="Now Open"
+                    android:textOff="All"
                     />
-
-
-
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                />
                 <ImageButton
                     android:id="@+id/btnList"
                     android:src="@drawable/listicon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#000000"
                     android:layout_weight="1"
+                    />
+                <Space
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
                     />
             </LinearLayout>
             <TextView

@@ -330,7 +330,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         System.out.println("centerAndZoomCamera: " + circleRadius + " zoomfactor " + zoomfactor +" " + spinner.getSelectedItem().toString());
 
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, zoomfactor );
-        mMap.moveCamera( update );
+        if (mMap != null)
+            mMap.moveCamera( update );
     }
     public void resizeCircle() {
         System.out.println("resize: " + spinner.getSelectedItem().toString());
@@ -348,7 +349,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         try {
             circle.remove();
         } catch (Exception e) {
-            System.out.println("resize circle exception: " + e.toString());
+            System.out.println("resize circle remove exception: " + e.toString());
         }
 
         circleOptions = new CircleOptions();
@@ -359,8 +360,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         circleOptions.fillColor(Data.colorYellowdesks()); // yellow
         circleOptions.strokeColor(Data.colorYellowdesks()); // yellow
         circleOptions.strokeWidth(2);
-        circle = mMap.addCircle(circleOptions);
 
+        if (mMap != null)
+            circle = mMap.addCircle(circleOptions);
 
 
 
