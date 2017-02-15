@@ -84,7 +84,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             System.out.println(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION));
             System.out.println(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION));
 
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -111,28 +110,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                 resizeCircle();
 
-
                 youMarker.remove();
                 youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
                 youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
 
-
                 centerAndZoomCamera();
-
-
-
             }
             System.out.println("done. null?");
             System.out.println(mLastLocation == null);
 
         } catch (SecurityException e) { System.out.println("sec exception " + e.toString() );}
-
-
-
-
-
     }
-
 
 
     /**

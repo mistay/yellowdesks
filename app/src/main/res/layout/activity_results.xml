@@ -9,7 +9,9 @@
     android:paddingRight="0dp"
     android:paddingTop="0dp"
     tools:context="at.langhofer.yellowdesks.ResultsActivity"
-    android:padding="0dp">
+    android:padding="0dp"
+    android:background="@color/yellwdesksYellow"
+    >
 
     <ListView
         android:id="@+id/listviewSearchResults"
