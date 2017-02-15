@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -217,7 +217,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mapFragment.getMapAsync( this );
 
 
-        final Button btnLogin = (Button) findViewById( R.id.btnList );
+        final ImageButton btnLogin = (ImageButton) findViewById( R.id.btnList );
 
         btnLogin.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {

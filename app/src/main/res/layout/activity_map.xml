@@ -84,12 +84,13 @@
 
 
 
-                <Button
+                <ImageButton
                     android:id="@+id/btnList"
+                    android:src="@drawable/listicon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="List ..." />
+                    />
             </LinearLayout>
             <TextView
                 android:id="@+id/tvByMap"
