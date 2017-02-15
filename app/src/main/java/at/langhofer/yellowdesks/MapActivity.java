@@ -117,10 +117,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
 
 
+                centerAndZoomCamera();
 
 
-                CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, 12 );
-                mMap.moveCamera( update );
 
             }
             System.out.println("done. null?");
@@ -279,6 +278,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 System.out.println("selected " + i);
                 System.out.println("selected " + spinner.getSelectedItem().toString());
                 resizeCircle();
+                centerAndZoomCamera();
             }
 
             @Override
@@ -299,6 +299,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 System.out.println("selected " + i);
                 System.out.println("selected " + spinner.getSelectedItem().toString());
                 resizeCircle();
+
+                centerAndZoomCamera();
             }
 
             @Override
@@ -309,6 +311,27 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
+    public void centerAndZoomCamera() {
+        int zoomfactor = 17;
+
+        // good values for nexus5
+        if (circleRadius > 300)
+            zoomfactor = 15;
+
+        if (circleRadius > 900)
+            zoomfactor = 13;
+
+        if (circleRadius > 3900)
+            zoomfactor = 11;
+
+        if (circleRadius > 10000)
+            zoomfactor = 9;
+
+        System.out.println("centerAndZoomCamera: " + circleRadius + " zoomfactor " + zoomfactor +" " + spinner.getSelectedItem().toString());
+
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, zoomfactor );
+        mMap.moveCamera( update );
+    }
     public void resizeCircle() {
         System.out.println("resize: " + spinner.getSelectedItem().toString());
         System.out.println("resize: " + spinner2.getSelectedItem().toString());
@@ -337,6 +360,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         circleOptions.strokeColor(Data.colorYellowdesks()); // yellow
         circleOptions.strokeWidth(2);
         circle = mMap.addCircle(circleOptions);
+
+
+
 
 
     }
