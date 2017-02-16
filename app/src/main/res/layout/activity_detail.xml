@@ -124,6 +124,9 @@
 
         <TextView
             android:text=""
+            android:textSize="40dp"
+            android:textStyle="bold"
+            android:textColor="@color/yellwdesksBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvPricecalc" />
