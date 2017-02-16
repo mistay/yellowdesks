@@ -63,7 +63,7 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".ResultsActivity" />
-        <activity android:name=".DetailActivity" />
+
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -77,6 +77,22 @@
 
         <activity android:name=".LoginActivity" />
         <activity android:name=".BookingresponseActivity"></activity>
+
+
+
+        <!-- // armin: braintree payment//    <activity android:name=".DetailActivity" />   -->
+        <activity android:name=".DetailActivity" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="${applicationId}.braintree" />
+            </intent-filter>
+        </activity>
+        <!-- // armin: braintree payment// -->
+
+
+
     </application>
 
 </manifest>

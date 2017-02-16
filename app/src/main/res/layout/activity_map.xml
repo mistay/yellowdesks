@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             tools:context="at.langhofer.yellowdesks3.at.langhofer.yellowdesks.MapActivity" />
 
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

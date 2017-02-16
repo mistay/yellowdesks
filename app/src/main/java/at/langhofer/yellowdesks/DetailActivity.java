@@ -15,7 +15,17 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-public class DetailActivity extends AppCompatActivity {
+import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.PayPalAccountNonce;
+import com.braintreepayments.api.models.PayPalRequest;
+import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.PostalAddress;
+
+public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +125,48 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
+        BraintreeFragment mBraintreeFragment = null;
+        try {
+            String mAuthorization="production_t5tm8zyp_8jmd464425vhc6n2";
+            mBraintreeFragment = BraintreeFragment.newInstance(this, mAuthorization);
+            // mBraintreeFragment is ready to use!
+
+
+
+            System.out.println("braintree init complete.");
+            System.out.println("braintree: " + mAuthorization);
+
+        } catch (InvalidArgumentException e) {
+            System.out.println("exception braintree: " + e.toString());
+        }
+
+        final BraintreeFragment a = mBraintreeFragment;
+
+        final Button btnPayNow = (Button) findViewById(R.id.btnPayNow);
+        btnPayNow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (a!=null)
+
+                    System.out.println("paypal started");
+
+
+                    PayPal.authorizeAccount(a);
+
+                    System.out.println("paypal authed");
+
+
+                PayPalRequest request = new PayPalRequest("0.01");
+                request.intent(PayPalRequest.INTENT_SALE);
+                //request.userAction(PayPalRequest.USER_ACTION_COMMIT);
+                PayPal.requestOneTimePayment(a, request);
+
+                System.out.println("paypal getPayPalRequest");
+
+            }
+        });
+
+
+
         final ImageButton btnBacktomap = (ImageButton) findViewById(R.id.btnBacktomap);
         btnBacktomap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -124,6 +176,8 @@ public class DetailActivity extends AppCompatActivity {
                 DetailActivity.this.startActivity(myIntent);
             }
         });
+
+
 
 
 
@@ -149,4 +203,29 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+        System.out.println("onpaymentmethodnoncecreated");
+        System.out.println("onpaymentmethodnoncecreated" + paymentMethodNonce);
+
+        PayPalAccountNonce paypalAccountNonce = (PayPalAccountNonce) paymentMethodNonce;
+        PostalAddress billingAddress = paypalAccountNonce.getBillingAddress();
+        String streetAddress = billingAddress.getStreetAddress();
+        String extendedAddress = billingAddress.getExtendedAddress();
+        String locality = billingAddress.getLocality();
+        String countryCodeAlpha2 = billingAddress.getCountryCodeAlpha2();
+        String postalCode = billingAddress.getPostalCode();
+        String region = billingAddress.getRegion();
+
+        System.out.println(String.format("%s %s %s %s %s %s", streetAddress, extendedAddress, locality, countryCodeAlpha2, postalCode, region));
+
+    }
+
+    @Override
+    public void onError(Exception error) {
+        System.out.println("error: " + error.toString());
+    }
+
+
 }
