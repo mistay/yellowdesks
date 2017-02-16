@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -25,8 +26,12 @@ import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 
-public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
+public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+    Host host;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +44,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
         System.out.println("DetailActivity. on create, hostId:" + hostId);
 
-        final Host host = Data.getInstance().getHost(hostId);
+        host = Data.getInstance().getHost(hostId);
 
         if (host == null) {
             System.out.println("DetailActivity::onCreate: host was null wtf? :(");
@@ -202,8 +207,64 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
 
 
+
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        System.out.println(String.format("day: %d month: %d year: %d", day, month, year));
+
+
+        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
+        dpFrom.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                changedate();
+            }
+        });
+
+        final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
+        dpTo.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                changedate();
+            }
+        });
     }
 
+    private void changedate() {
+        System.out.println("changedate()");
+        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
+        final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(dpFrom.getYear(), dpFrom.getMonth(),dpFrom.getDayOfMonth());
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.set(dpTo.getYear(), dpTo.getMonth(),dpTo.getDayOfMonth());
+        // todo: gscheit mit kalender die differenzzeit berechnen. auf die schnelle nix gscheits gfunden ...
+        long daysDiff = TimeUnit.MILLISECONDS.toDays(calendar2.getTimeInMillis() - calendar.getTimeInMillis());
+        System.out.println(String.format("changedate() diff: %d days",daysDiff));
+
+        TextView tvPricecalc = (TextView) findViewById(R.id.tvPricecalc);
+
+
+        Float price = null;
+
+        if (daysDiff >= 31 * 6 && host.getPrice6Months() != null )
+            price = daysDiff * host.getPrice6Months();
+        else if (daysDiff >= 31 * 1 && host.getPrice1Month() != null)
+            price = daysDiff * host.getPrice1Month();
+        else if (daysDiff >= 10 && host.getPrice10Days() != null)
+            price = daysDiff * host.getPrice10Days();
+        else if (daysDiff >= 1 && host.getPrice1Day() != null)
+            price = daysDiff * host.getPrice1Day();
+
+        if (price != null)
+            tvPricecalc.setText(String.format("Price: %s", NumberFormat.getCurrencyInstance().format(price)));
+        else
+            tvPricecalc.setText(String.format("Price: n/a"));
+
+
+    }
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
         System.out.println("onpaymentmethodnoncecreated");
