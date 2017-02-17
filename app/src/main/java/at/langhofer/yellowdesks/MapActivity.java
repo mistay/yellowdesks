@@ -138,12 +138,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         Data data = Data.getInstance();
 
+        final TextView tvStatusLoading = (TextView) findViewById( R.id.tvStatusLoading );
+
+
         // hook up data ready
         TaskDelegate taskDelegate = new TaskDelegate() {
             @Override
             public void taskCompletionResult(String result) {
                 // data is ready
                 System.out.println("data ready");
+
+                tvStatusLoading.setText( "" );
+
+
+
 
                 List<Host> hosts = Data.getInstance().getData();
                 for (Host host : hosts) {
@@ -176,6 +184,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         // start download
         System.out.println("starting download...");
+        tvStatusLoading.setText( "Loading..." );
+
+
         data.downloadHosts(taskDelegate);
 
         // disable zoom controls to make space for "open now" and "list" buttons
