@@ -2,18 +2,23 @@ package at.langhofer.yellowdesks;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -62,15 +67,31 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
             for (HashMap.Entry<String, Bitmap> entry : images.entrySet()) {
                 Bitmap bitmap = entry.getValue();
 
-                System.out.println("adding imageview");
+                System.out.println("adding imageview. width parent: " + llimages.getWidth());
                 final ImageView ivImage = new ImageView( this );
-                ivImage.setMinimumWidth( llimages.getWidth()  );
+
+                final Space space = new Space(this);
+                space.setMinimumHeight( 20 );
+
+                ivImage.setMinimumWidth( llimages.getWidth() );
                 ivImage.setMinimumHeight( 500 );
+                ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
 
                 llimages.addView( ivImage );
+                llimages.addView ( space );
 
                 if (bitmap == null) {
                     // download
+
+                    RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
+                    anim.setInterpolator(new LinearInterpolator());
+                    anim.setRepeatCount( Animation.INFINITE);
+                    anim.setDuration(700);
+
+                    ivImage.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.loader ));
+                    ivImage.startAnimation( anim );
+
                     DownloadWebimageTask downloadWebimageTask = new DownloadWebimageTask();
                     downloadWebimageTask.delegate = new DelegateImageDownloaded() {
                         @Override
@@ -81,6 +102,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
                             entry.setValue( result );
 
+                            ivImage.setAnimation(null);
                             ivImage.setImageBitmap( entry.getValue() );
 
                             host.setBitmapForImage( entry.getKey(), result );
@@ -93,6 +115,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                     downloadWebimageTask.execute(entry.getKey());
                 } else {
 
+                    ivImage.setAnimation(null);
                     System.out.println("setting image from already downloaded cache");
                     ivImage.setImageBitmap( bitmap );
                 }
