@@ -2,6 +2,7 @@ package at.langhofer.yellowdesks;
 
 import android.graphics.Bitmap;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Host {
@@ -11,8 +12,14 @@ public class Host {
     private int availableDesks=0;
     private double lat = Integer.MIN_VALUE;
     private double lng = Integer.MIN_VALUE;
+
+    // featured image, displayed in list, ...
     private String imageURL = "";
-    private LinkedList<Bitmap> bitmaps = new LinkedList<Bitmap>();
+    private Bitmap bitmap = null;
+
+    // detail view images, excluding featured image (shown in detail view, not in search result list)
+    private HashMap<String, Bitmap> images =  null;
+
     private String videoURL = null;
 
     Float price_1day = null;
@@ -37,7 +44,7 @@ public class Host {
         // do not allow new Item()
     }
 
-    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, String details, String extras, String open_from, String open_till, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
+    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -45,6 +52,12 @@ public class Host {
         this.lat = lat;
         this.lng = lng;
         this.imageURL = imageURL;
+
+        images = new  HashMap<String, Bitmap>();
+        for (String sURL : imageURLs) {
+            images.put(sURL, null);
+        }
+
         this.details = details;
         this.extras = extras;
         this.open_from = open_from;
@@ -89,12 +102,20 @@ public class Host {
     public String getOpenTill() { return open_till; }
 
 
-    public Bitmap getBitmap() { return bitmaps.size()>0 ? bitmaps.get(0) : null; }
-    public LinkedList<Bitmap> getBitmaps() { return bitmaps; }
+    public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
+    public Bitmap getBitmap() { return this.bitmap; }
+
+
+    public void setBitmapForImage(String imageURL, Bitmap bitmap) {
+        images.put(imageURL, bitmap);
+    }
+    public HashMap<String, Bitmap> getImages() {
+        return images;
+    }
+
+
 
     public String getVideoURL() { return videoURL; }
-
-    public void setBitmap(Bitmap bitmap) { this.bitmaps.add(bitmap); }
 
     public Float getPrice1Day(){ return price_1day; }
     public Float getPrice10Days(){ return price_10days; }

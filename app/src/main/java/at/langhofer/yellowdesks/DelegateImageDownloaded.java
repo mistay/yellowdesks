@@ -1,5 +1,5 @@
 package at.langhofer.yellowdesks;
 
 public interface DelegateImageDownloaded {
-        public void imageDownloaded(android.graphics.Bitmap result);
+        public void imageDownloaded(android.graphics.Bitmap result, Object tag);
 }

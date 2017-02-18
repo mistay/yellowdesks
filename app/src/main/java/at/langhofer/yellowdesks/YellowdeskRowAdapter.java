@@ -69,7 +69,7 @@ public class YellowdeskRowAdapter extends ArrayAdapter<Host> {
 
             DelegateImageDownloaded downloadFinished = new DelegateImageDownloaded() {
                 @Override
-                public void imageDownloaded(Bitmap result) {
+                public void imageDownloaded(Bitmap result, Object tag) {
                 if (result != null) {
                     System.out.println("imageDownloaded, result: " + result.toString());
 

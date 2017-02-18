@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -102,10 +103,10 @@ public class Data {
         DownloadWebimageTask downloadWebimageTask = new DownloadWebimageTask();
         downloadWebimageTask.delegate = new DelegateImageDownloaded() {
             @Override
-            public void imageDownloaded(Bitmap result) {
+            public void imageDownloaded(Bitmap result, Object tag) {
                 host.setBitmap(result);
                 System.out.println("taskCompletionResult: " + result);
-                downloadFinished.imageDownloaded(result);
+                downloadFinished.imageDownloaded(result, tag);
             }
         };
         downloadWebimageTask.execute(host.getImageURL());
@@ -145,6 +146,18 @@ public class Data {
                             Float price_1month = value.getString("price_1month").equals("null") ? null :  Float.parseFloat(value.getString("price_1month"));
                             Float price_6months =  value.getString("price_6months").equals("null") ? null :  Float.parseFloat(value.getString("price_6months"));
 
+                            LinkedList<String> list = new LinkedList<String>();
+                            try {
+                                JSONArray arr = value.getJSONArray("imageURLs");
+                                for(int j = 0; j < arr.length(); j++){
+                                    System.out.println(String.format("adding image %s to image list",arr.get(j).toString() ));
+                                    list.add(arr.get(j).toString());
+                                }
+                            } catch (Exception e) {
+                                System.out.println("error retreiving 'imageURLs' from hosts request: " + e.toString());
+                            }
+
+
                             Host h = new Host(
                                     Long.parseLong(value.getString("id")),
                                     value.getString("host"),
@@ -153,6 +166,7 @@ public class Data {
                                     Double.parseDouble( value.getString("lat")),
                                     Double.parseDouble( value.getString("lng")),
                                     imageURL,
+                                    list,
                                     details,
                                     extras,
                                     value.getString("open_from") == "null" ? null : value.getString("open_from"),

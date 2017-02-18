@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -28,6 +29,7 @@ import com.braintreepayments.api.models.PostalAddress;
 
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
@@ -50,6 +52,61 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
             System.out.println("DetailActivity::onCreate: host was null wtf? :(");
             return;
         }
+
+
+        final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
+
+        HashMap<String, Bitmap> images = host.getImages();
+
+        if (images != null) {
+            for (HashMap.Entry<String, Bitmap> entry : images.entrySet()) {
+                Bitmap bitmap = entry.getValue();
+
+                System.out.println("adding imageview");
+                final ImageView ivImage = new ImageView( this );
+                ivImage.setMinimumWidth( llimages.getWidth()  );
+                ivImage.setMinimumHeight( 500 );
+
+                llimages.addView( ivImage );
+
+                if (bitmap == null) {
+                    // download
+                    DownloadWebimageTask downloadWebimageTask = new DownloadWebimageTask();
+                    downloadWebimageTask.delegate = new DelegateImageDownloaded() {
+                        @Override
+                        public void imageDownloaded(Bitmap result, Object tag) {
+                            System.out.println("taskCompletionResult tag: " + tag.toString());
+
+                            HashMap.Entry<String, Bitmap> entry = (HashMap.Entry<String, Bitmap> ) tag;
+
+                            entry.setValue( result );
+
+                            ivImage.setImageBitmap( entry.getValue() );
+
+                            host.setBitmapForImage( entry.getKey(), result );
+                            System.out.println("taskCompletionResult: " + result);
+                        }
+                    };
+                    System.out.println("sending download request result: " + entry.getKey());
+
+                    downloadWebimageTask.setTag( entry );
+                    downloadWebimageTask.execute(entry.getKey());
+                } else {
+
+                    System.out.println("setting image from already downloaded cache");
+                    ivImage.setImageBitmap( bitmap );
+                }
+            }
+        } else {
+            System.out.println("images were null :(");
+        }
+
+
+
+
+
+
+
 
         //final TextView textViewDeskstatus2 = (TextView) findViewById(R.id.deskstatus2);
         //textViewDeskstatus2.setText("YELLOW desks: " + host.gettotalDesks() + "/" + host.getAvailableDesks());
@@ -82,7 +139,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
             tmp.append ( String.format("6 months: %s EUR\n" , host.getPrice6Months()));
 
 
-        System.out.println("dbug: " + host.getPrice1Day());
+        System.out.println("host getPrice1Day(): " + host.getPrice1Day());
         final TextView tvPrices = (TextView) findViewById(R.id.tvPrices);
         tvPrices.setText(String.format("Prices: %s", ((tmp.length() == 0) ? "n/a" : "\n" + tmp.toString())));
 
@@ -99,7 +156,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         else {
             DelegateImageDownloaded downloadFinished = new DelegateImageDownloaded() {
                 @Override
-                public void imageDownloaded(Bitmap result) {
+                public void imageDownloaded(Bitmap result, Object tag) {
                     if (result != null) {
                         System.out.println("imageDownloaded, result: " + result.toString());
 
@@ -128,6 +185,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                 DetailActivity.this.startActivity(myIntent);
             }
         });
+
 
 
         BraintreeFragment mBraintreeFragment = null;

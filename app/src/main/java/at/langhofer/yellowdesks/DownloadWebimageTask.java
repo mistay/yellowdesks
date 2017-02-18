@@ -15,6 +15,14 @@ public class DownloadWebimageTask extends AsyncTask<String, Void, String> {
 
     Bitmap bitmap = null;
 
+    private Object tag;
+    public void setTag (Object tag) {
+        this.tag = tag;
+    }
+    public Object getTag () {
+        return tag;
+    }
+
     @Override
     protected String doInBackground(String... urls) {
         // params comes from the execute() call: params[0] is the url
@@ -39,9 +47,9 @@ public class DownloadWebimageTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         System.out.println("onPostExecute, result: " + result);
-        System.out.println("onPostExecute, bitmap: " + ( bitmap == null));
+        System.out.println("onPostExecute, bitmap =?= null: " + ( bitmap == null));
 
-        delegate.imageDownloaded(bitmap);
+        delegate.imageDownloaded(bitmap, tag);
 
         System.out.println("download finished: " + result);
     }
