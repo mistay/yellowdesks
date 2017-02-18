@@ -1,10 +1,13 @@
 package at.langhofer.yellowdesks;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -77,7 +80,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     }
     @Override
     public void onConnected(Bundle connectionHint) {
-         /*
+
          if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             System.out.println("not enough permissions to ask for location");
 
@@ -85,8 +88,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             System.out.println(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION));
 
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                    new String[]{ android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1
+                    );
 
 
             // TODO: Consider calling
@@ -96,9 +99,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+             System.out.println("giving up requesting permissions for gps" );
+             return;
         }
-        */
+
 
         try {
             System.out.println("trying getting location" );
@@ -115,6 +119,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
 
                 centerAndZoomCamera();
+            } else {
             }
             System.out.println("done. null?");
             System.out.println(mLastLocation == null);
