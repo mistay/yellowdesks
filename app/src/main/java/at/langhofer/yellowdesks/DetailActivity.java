@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
 
 
-        final Dialog nagDialog = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        final Dialog nagDialog = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent);
         nagDialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
         nagDialog.setCancelable(false);
         nagDialog.setContentView(R.layout.preview_image);
