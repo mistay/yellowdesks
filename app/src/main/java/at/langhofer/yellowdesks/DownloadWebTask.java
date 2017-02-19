@@ -73,8 +73,12 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                     System.out.println( String.format( "ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress() ) );
 
                     Proxy proxy = new Proxy( Proxy.Type.HTTP, new InetSocketAddress(i.getHostAddress(), 443));
-                    conn = (HttpURLConnection) url.openConnection();
 
+                    try {
+                        conn = (HttpURLConnection) url.openConnection();
+                    } catch (Exception e) {
+                        System.out.println("Exception while openConnection() to " + i.getHostAddress() + " " + e.toString() );
+                    }
                     conn.setReadTimeout(10000 /* milliseconds */);
                     conn.setConnectTimeout(15000 /* milliseconds */);
                     conn.setRequestMethod("GET");
@@ -83,21 +87,21 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
                     try {
                         conn.connect();
-
-                        int response = conn.getResponseCode();
-                        is = conn.getInputStream();
-
-                        // Convert the InputStream into a string
-                        String contentAsString = readIt(is);
-                        //System.out.println("contentasstring: " + contentAsString);
-                        return contentAsString;
                     } catch (Exception e) {
-                        System.out.println("socket: could not connect: " + e.toString());
+                        System.out.println("socket: could not connect to: " + i.getHostAddress() + " host: " + i.getHostName() + " exception: " + e.toString());
                         continue;
                     }
+
+                    int response = conn.getResponseCode();
+                    is = conn.getInputStream();
+
+                    // Convert the InputStream into a string
+                    String contentAsString = readIt(is);
+                    //System.out.println("contentasstring: " + contentAsString);
+                    return contentAsString;
                 }
             } catch (Exception e) {
-                System.out.println("Exception while resolving hostname: " +  e.toString() );
+                System.out.println("Exception while resolving hostname: " + e.toString() );
             }
 
 
