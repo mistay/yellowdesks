@@ -8,8 +8,11 @@
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btnLoginFacebook"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_height="match_parent"
+
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+
         android:text="LoginFB" />
 
 
@@ -19,15 +22,41 @@
         android:layout_height="wrap_content"
         android:id="@+id/txtLoginStatus" />
 
-    <View
-        android:id="@+id/view1"
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="20dp"
-        android:background="#555555" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/tvText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="or"
+            android:textColor="#000"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toLeftOf="@id/tvText"
+            android:background="#000"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:layout_toRightOf="@id/tvText"
+            android:background="#000"
+            />
+
+    </RelativeLayout>
 
     <EditText
         android:layout_width="match_parent"
@@ -36,7 +65,11 @@
         android:ems="10"
         android:id="@+id/txtLoginEmail"
         android:hint="e-mail or username"
-        android:layout_weight="0"/>
+        android:layout_weight="0"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+
+        />
 
     <EditText
         android:layout_width="match_parent"
@@ -45,13 +78,23 @@
         android:ems="10"
         android:id="@+id/txtLoginPassword"
         android:hint="password"
-        android:layout_weight="0"/>
+        android:layout_weight="0"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+
+        />
 
     <Button
         android:text="Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnLoginBackend"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="#000"
+        android:textColor="@color/yellwdesksYellow"
+
+
         android:layout_weight="0"/>
 
 </LinearLayout>
