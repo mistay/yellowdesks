@@ -21,6 +21,10 @@ import com.facebook.login.widget.LoginButton;
 
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
+import static at.langhofer.yellowdesks.LoginDetails.username;
+
 // GEO get location: ConnectionCallbacks, OnConnectionFailedListener
 public class LoginActivity extends AppCompatActivity {
 
@@ -66,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginDetails loginDetails = Data.getInstance().loginDetails;
 
-                if (loginDetails.username != "") {
+                if (username != "") {
                     System.out.println( "login successful, redirecting to map" );
 
 
@@ -88,16 +92,56 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         btnF.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+
             @Override
             public void onSuccess(LoginResult loginResult) {
                 System.out.println("fb login: result " + loginResult.toString());
+                AccessToken accessToken = loginResult.getAccessToken();
+                System.out.println("fb accessToken: " + accessToken.toString());
+                //System.out.println("fb accessToken app id: " + accessToken.getApplicationId());
+                System.out.println("fb accessToken token: " + accessToken.getToken());
+
+                DownloadWebTask downloadWebTask = new DownloadWebTask();
+                downloadWebTask.delegate = new TaskDelegate() {
+                    @Override
+                    public void taskCompletionResult(String raw) {
+                        if (raw != null && raw != "") {
+                            try {
+                                JSONObject value = new JSONObject(raw);
+                                System.out.println("result of loginappfb");
+                                System.out.println(value.getBoolean("success"));
+                                if (value.getBoolean("success")) {
+                                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
+                                    LoginActivity.this.startActivity( myIntent );
+                                }
+                                System.out.println("eof debugging new loginappfb()");
+                            } catch (Exception e) {
+                                System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
+                            }
+                        }
+
+                    }
+                };
+                downloadWebTask.execute("https://yellowdesks.com/users/loginappfb/" + accessToken.getToken());
+                System.out.println("sent fb login request to yd server");
+
+
 
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
+
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 System.out.println("LoginActivity" + response.toString());
+
+                                Iterator<String> i = object.keys();
+
+                                while (i.hasNext()) {
+                                    System.out.println("facbook key: " + i.next());
+                                }
+
 
                                 // Application code
                                 try {
@@ -113,8 +157,8 @@ public class LoginActivity extends AppCompatActivity {
                                     //todo (important!): check in backend if login succeeded
                                     // Data.getInstance().loginViaFacebook(LoggedInUser.email);
 
-                                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
-                                    LoginActivity.this.startActivity( myIntent );
+
+                                    // brauchen wir e-mail und realname von facebook hier in der app?
 
 
                                 } catch (Exception e) {
