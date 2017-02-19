@@ -1,6 +1,7 @@
 package at.langhofer.yellowdesks;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -64,18 +66,31 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
 
 
-        final Dialog nagDialog = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent);
-        nagDialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
-        nagDialog.setCancelable(false);
-        nagDialog.setContentView(R.layout.preview_image);
-        Button btnClose = (Button)nagDialog.findViewById(R.id.btnIvClose);
-        final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+        final Dialog dialogFullscreenImage = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent);
+        dialogFullscreenImage.requestWindowFeature( Window.FEATURE_NO_TITLE);
+        dialogFullscreenImage.setCancelable(false);
+        dialogFullscreenImage.setContentView(R.layout.preview_image);
+        Button btnClose = (Button)dialogFullscreenImage.findViewById(R.id.btnIvClose);
+        final ImageView ivPreview = (ImageView)dialogFullscreenImage.findViewById(R.id.iv_preview_image);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                nagDialog.dismiss();
+                dialogFullscreenImage.dismiss();
             }
         });
+
+        dialogFullscreenImage.setOnKeyListener( new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    finish();
+                    dialogFullscreenImage.dismiss();
+                }
+                return true;
+            }
+        } );
+
 
 
 
@@ -101,7 +116,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                         System.out.println("showing dialog full screen video");
                         ivPreview.setImageDrawable( ivImage.getDrawable());
 
-                        nagDialog.show();
+                        dialogFullscreenImage.show();
                     }
                 } );
 
