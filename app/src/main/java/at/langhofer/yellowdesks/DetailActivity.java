@@ -1,5 +1,6 @@
 package at.langhofer.yellowdesks;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -61,6 +63,22 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
         final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
 
+
+        final Dialog nagDialog = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        nagDialog.requestWindowFeature( Window.FEATURE_NO_TITLE);
+        nagDialog.setCancelable(false);
+        nagDialog.setContentView(R.layout.preview_image);
+        Button btnClose = (Button)nagDialog.findViewById(R.id.btnIvClose);
+        final ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                nagDialog.dismiss();
+            }
+        });
+
+
+
         HashMap<String, Bitmap> images = host.getImages();
 
         if (images != null) {
@@ -77,6 +95,24 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                 ivImage.setMinimumHeight( 500 );
                 ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
+                ivImage.setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("showing dialog full screen video");
+                        ivPreview.setImageDrawable( ivImage.getDrawable());
+
+                        nagDialog.show();
+                    }
+                } );
+
+
+
+
+
+
+
+
+
 
                 llimages.addView( ivImage );
                 llimages.addView ( space );
@@ -84,11 +120,11 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                 if (bitmap == null) {
                     // download
 
-                    RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
+                    RotateAnimation anim = new RotateAnimation(0f, 360, 0, 0 );
+                    System.out.println("pivot: " + ivImage.getWidth()/2);
                     anim.setInterpolator(new LinearInterpolator());
                     anim.setRepeatCount( Animation.INFINITE);
-                    anim.setDuration(700);
-
+                    anim.setDuration(1000);
                     ivImage.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.loader ));
                     ivImage.startAnimation( anim );
 
@@ -96,17 +132,22 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                     downloadWebimageTask.delegate = new DelegateImageDownloaded() {
                         @Override
                         public void imageDownloaded(Bitmap result, Object tag) {
-                            System.out.println("taskCompletionResult tag: " + tag.toString());
+                        System.out.println("taskCompletionResult tag: " + tag.toString());
 
-                            HashMap.Entry<String, Bitmap> entry = (HashMap.Entry<String, Bitmap> ) tag;
+                        HashMap.Entry<String, Bitmap> entry = (HashMap.Entry<String, Bitmap> ) tag;
 
-                            entry.setValue( result );
+                        entry.setValue( result );
 
-                            ivImage.setAnimation(null);
-                            ivImage.setImageBitmap( entry.getValue() );
+                        ivImage.setAnimation(null);
+                        ivImage.setImageBitmap( entry.getValue() );
 
-                            host.setBitmapForImage( entry.getKey(), result );
-                            System.out.println("taskCompletionResult: " + result);
+                        host.setBitmapForImage( entry.getKey(), result );
+                        System.out.println("taskCompletionResult: " + result);
+
+
+
+
+
                         }
                     };
                     System.out.println("sending download request result: " + entry.getKey());
@@ -118,6 +159,11 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                     ivImage.setAnimation(null);
                     System.out.println("setting image from already downloaded cache");
                     ivImage.setImageBitmap( bitmap );
+
+
+
+
+
                 }
             }
         } else {
@@ -282,6 +328,9 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                 vvHost.setVideoURI(uri);
                 vvHost.requestFocus();
                 vvHost.start();
+
+                System.out.println("videoview element set to visible, video started w/ url: " + host.getVideoURL());
+
             }
         }
 
