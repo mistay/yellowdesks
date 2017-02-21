@@ -121,7 +121,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 centerAndZoomCamera();
             } else {
             }
-            System.out.println("done. null?");
+            System.out.println("done reading location. mLastLocation null?");
             System.out.println(mLastLocation == null);
 
         } catch (SecurityException e) { System.out.println("sec exception " + e.toString() );}
@@ -256,7 +256,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     .addApi(LocationServices.API)
                     .build();
         }
-        System.out.println("attacced google api client");
+        System.out.println("attached google api client");
 
 
 
@@ -331,7 +331,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         if (circleRadius > 10000)
             zoomfactor = 9;
 
-        System.out.println("centerAndZoomCamera: " + circleRadius + " zoomfactor " + zoomfactor +" " + spinner.getSelectedItem().toString());
+        System.out.println("centerAndZoomCamera: " + circleRadius + " zoomfactor google: " + zoomfactor + " spinner.getselecteditem(): " + spinner.getSelectedItem().toString());
 
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom( currentlocation, zoomfactor );
         if (mMap != null)
@@ -351,7 +351,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         circleRadius = (int)( minutes * km_per_hour * 1000.0 / 60.0);
 
         try {
-            circle.remove();
+            if (circle != null)
+                circle.remove();
         } catch (Exception e) {
             System.out.println("resize circle remove exception: " + e.toString());
         }
