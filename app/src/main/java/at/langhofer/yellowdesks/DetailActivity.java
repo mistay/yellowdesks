@@ -36,10 +36,11 @@ import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 
+import org.json.JSONObject;
+
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
     Host host;
@@ -381,32 +382,40 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         System.out.println("changedate()");
         final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
         final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(dpFrom.getYear(), dpFrom.getMonth(),dpFrom.getDayOfMonth());
-        Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(dpTo.getYear(), dpTo.getMonth(),dpTo.getDayOfMonth());
-        // todo: gscheit mit kalender die differenzzeit berechnen. auf die schnelle nix gscheits gfunden ...
-        long daysDiff = TimeUnit.MILLISECONDS.toDays(calendar2.getTimeInMillis() - calendar.getTimeInMillis());
-        System.out.println(String.format("changedate() diff: %d days",daysDiff));
 
-        TextView tvPricecalc = (TextView) findViewById(R.id.tvPricecalc);
+        final TextView tvPricecalc = (TextView) findViewById( R.id.tvPricecalc );
+
+        DownloadWebTask downloadWebTask = new DownloadWebTask();
+        downloadWebTask.delegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String raw) {
+                if (raw != null && raw != "") {
+                    try {
+                        JSONObject value = new JSONObject(raw);
+                        Integer days = value.getInt( "count" );
+                        Double price = value.getDouble( "price" );
+                        if (price != null)
+                            tvPricecalc.setText(String.format("Days: %s. Price: %s", days, NumberFormat.getCurrencyInstance().format(price)));
+                        else
+                            tvPricecalc.setText(String.format("Days: %s. Price: n/a", days));
+                        System.out.println("eof debugging new loginappfb()");
+                    } catch (Exception e) {
+                        System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
+                    }
+                }
+
+            }
+        };
+
+        String url = "https://yellowdesks.com/holidays/getprice/" + host.getId() + "/" + dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth() + "/" + dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth();
+        tvPricecalc.setText("Loading...");
+        downloadWebTask.execute(url);
+        System.out.println("sent url: " + url);
 
 
-        Float price = null;
+        //calendar.set(dpFrom.getYear(), dpFrom.getMonth(),dpFrom.getDayOfMonth());
 
-        if (daysDiff >= 31 * 6 && host.getPrice6Months() != null )
-            price = daysDiff * host.getPrice6Months();
-        else if (daysDiff >= 31 * 1 && host.getPrice1Month() != null)
-            price = daysDiff * host.getPrice1Month();
-        else if (daysDiff >= 10 && host.getPrice10Days() != null)
-            price = daysDiff * host.getPrice10Days();
-        else if (daysDiff >= 1 && host.getPrice1Day() != null)
-            price = daysDiff * host.getPrice1Day();
 
-        if (price != null)
-            tvPricecalc.setText(String.format("Price: %s", NumberFormat.getCurrencyInstance().format(price)));
-        else
-            tvPricecalc.setText(String.format("Price: n/a"));
 
 
     }
