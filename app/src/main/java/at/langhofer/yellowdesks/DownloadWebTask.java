@@ -1,5 +1,6 @@
 package at.langhofer.yellowdesks;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -7,11 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by arminlanghofer on 20.11.16.
@@ -61,55 +61,68 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
     }
 
     private String downloadUrl(String myurl) throws IOException {
+        return downloadUrl(myurl, false);
+    }
+
+    private String downloadUrl(String myurl, boolean endlessly) throws IOException {
         InputStream is = null;
 
         try {
             URL url = new URL(myurl);
-            HttpURLConnection conn = null;
+            HttpsURLConnection conn = null;
             try {
                 InetAddress[] addresses = InetAddress.getAllByName( url.getHost() );
-                for (InetAddress i : addresses) {
+                do {
+                    for (InetAddress i : addresses) {
 
-                    System.out.println( String.format( "ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress() ) );
+                        System.out.println( String.format( "ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress() ) );
 
-                    Proxy proxy = new Proxy( Proxy.Type.HTTP, new InetSocketAddress(i.getHostAddress(), 443));
+                        //Proxy proxy = new Proxy( Proxy.Type.DIRECT, new InetSocketAddress(i.getHostAddress(), 443));
 
-                    try {
-                        conn = (HttpURLConnection) url.openConnection();
-                    } catch (Exception e) {
-                        System.out.println("Exception while openConnection() to " + i.getHostAddress() + " " + e.toString() );
+                        try {
+                            // todo: not good. was, wenn per SNI ge-vhosted wird auf der serverseite? url möglichst nicht umschreiben ...
+                            InetAddress address = InetAddress.getByName(i.getHostAddress());
+                            Uri url2 ;
+
+                            Uri.Builder builder = new Uri.Builder();
+                            builder.scheme("https")
+                                    .authority(i.getHostAddress())
+                                    .appendPath(url.getPath());
+
+                            url2 = builder.build();
+                            System.out.println("Url2: " + url2.toString());
+                            conn = (HttpsURLConnection) url.openConnection(  );
+
+                        } catch (Exception e) {
+                            System.out.println( "Exception while openConnection() to " + i.getHostAddress() + " " + e.toString() );
+                        }
+                        conn.setReadTimeout( 10000 );
+                        conn.setConnectTimeout( 15000 );
+                        conn.setRequestMethod( "GET" );
+                        conn.setDoInput( true );
+                        // Starts the query
+
+                        try {
+                            conn.connect();
+                        } catch (Exception e) {
+                            System.out.println( "socket: could not connect to: " + i.getHostAddress() + " host: " + i.getHostName() + " exception: " + e.toString() );
+                            continue;
+                        }
+
+                        int response = conn.getResponseCode();
+                        is = conn.getInputStream();
+
+                        // Convert the InputStream into a string
+                        String contentAsString = readIt( is );
+                        //System.out.println("contentasstring: " + contentAsString);
+                        return contentAsString;
                     }
-                    conn.setReadTimeout(10000 /* milliseconds */);
-                    conn.setConnectTimeout(15000 /* milliseconds */);
-                    conn.setRequestMethod("GET");
-                    conn.setDoInput(true);
-                    // Starts the query
+                } while (endlessly);
 
-                    try {
-                        conn.connect();
-                    } catch (Exception e) {
-                        System.out.println("socket: could not connect to: " + i.getHostAddress() + " host: " + i.getHostName() + " exception: " + e.toString());
-                        continue;
-                    }
-
-                    int response = conn.getResponseCode();
-                    is = conn.getInputStream();
-
-                    // Convert the InputStream into a string
-                    String contentAsString = readIt(is);
-                    //System.out.println("contentasstring: " + contentAsString);
-                    return contentAsString;
-                }
             } catch (Exception e) {
                 System.out.println("Exception while resolving hostname: " + e.toString() );
             }
-
-
-
             return null;
-
-            // Makes sure that the InputStream is closed after the app is
-            // finished using it.
         } finally {
             if (is != null) {
                 is.close();
