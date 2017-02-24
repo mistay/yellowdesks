@@ -2,6 +2,7 @@ package at.langhofer.yellowdesks;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,16 +70,15 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
         try {
             URL url = new URL(myurl);
+
+
             HttpsURLConnection conn = null;
             try {
                 InetAddress[] addresses = InetAddress.getAllByName( url.getHost() );
                 do {
                     for (InetAddress i : addresses) {
 
-                        System.out.println( String.format( "ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress() ) );
-
-                        //Proxy proxy = new Proxy( Proxy.Type.DIRECT, new InetSocketAddress(i.getHostAddress(), 443));
-
+                        System.out.println( String.format("ip address(es) for host %s: %s", i.getHostName(), i.getHostAddress() ) );
                         try {
                             // todo: not good. was, wenn per SNI ge-vhosted wird auf der serverseite? url möglichst nicht umschreiben ...
                             InetAddress address = InetAddress.getByName(i.getHostAddress());
@@ -91,7 +91,29 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
                             url2 = builder.build();
                             System.out.println("Url2: " + url2.toString());
-                            conn = (HttpsURLConnection) url.openConnection(  );
+                            conn = (HttpsURLConnection) url.openConnection();
+
+                            //System.out.println("login: " + Data.getInstance().loginDetails.username);
+
+                            // --> "armin:inh"
+                            System.out.println("login: " + url.getUserInfo());
+                            //if (Data.getInstance().loginDetails.username != null)
+
+                            //todo: make dynamic
+                            // e.g. Basic YXJtfaW5jbaedvcmtwelcjpafaepbmhhcjFCKaag==
+                            String headervalue = null;
+                            if (url.getUserInfo() != null) {
+                                headervalue = String.format("Basic %s", Base64.encodeToString(url.getUserInfo().getBytes(), Base64.NO_WRAP));
+                            } else {
+                                if (Data.getInstance().loginDetails!=null) {
+                                    headervalue = String.format("Basic %s", Base64.encodeToString( String.format("%s:%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password).getBytes(), Base64.NO_WRAP));
+                                }
+                            }
+                            System.out.println("headervalue: " + headervalue);
+                            if (headervalue != null)
+                                conn.setRequestProperty("Authorization", headervalue);
+
+                            System.out.println("attached basic info");
 
                         } catch (Exception e) {
                             System.out.println( "Exception while openConnection() to " + i.getHostAddress() + " " + e.toString() );
