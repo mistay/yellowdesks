@@ -23,8 +23,6 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 
-import static at.langhofer.yellowdesks.LoginDetails.username;
-
 // GEO get location: ConnectionCallbacks, OnConnectionFailedListener
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,10 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         // facebook login button//
-
-
         callbackManager = CallbackManager.Factory.create();
 
         FacebookSdk.setIsDebugEnabled(true);
@@ -70,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 LoginDetails loginDetails = Data.getInstance().loginDetails;
 
-                if (username != "") {
+                if (loginDetails.username != null) {
                     System.out.println( "login successful, redirecting to map" );
 
 
@@ -87,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLoginBackend.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
                 Data d = Data.getInstance();
-                d.login(txtLoginEmail.getText().toString(), txtLoginPassword.getText().toString(), taskDelegate);
+                d.login("armincoworker", "inhar1B*", taskDelegate);
+                //d.login(txtLoginEmail.getText().toString(), txtLoginPassword.getText().toString(), taskDelegate);
             }
         });
 
@@ -187,9 +183,6 @@ public class LoginActivity extends AppCompatActivity {
 
         btnF.setReadPermissions("email"); //?!?
         System.out.println("attacced login");
-
-
-
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
