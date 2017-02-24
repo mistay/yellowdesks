@@ -155,13 +155,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                 tvStatusLoading.setText( "" );
 
-
-
-
                 List<Host> hosts = Data.getInstance().getData();
                 for (Host host : hosts) {
                     LatLng latlng = new LatLng( host.getLat(), host.getLng() );
-                    System.out.println("new latlng: " + latlng.toString());
+                    System.out.println(String.format("new Marker %s for host %s", latlng.toString(), host.getHost()));
                     Marker myMarker = mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
 
                     // attaching host to marker to retreive in OnMarkerClickListener
@@ -175,14 +172,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                             // retreive host from marker
                             Host host = (Host) marker.getTag();
-                            System.out.println("opening detail activity with key: " + host.getId());
-                            myIntent.putExtra( "hostId", host.getId() );
+                            if (host !=null) {
+                                System.out.println( "opening detail activity with key: " + host.getId() );
+                                myIntent.putExtra( "hostId", host.getId() );
 
-                            MapActivity.this.startActivity( myIntent );
+                                MapActivity.this.startActivity( myIntent );
+                            } else {
+                                System.out.println("OnMarkerClickListener: host was null :(");
+                            }
                             return false;
                         }
                     };
                     mMap.setOnMarkerClickListener(onMarkerClickListener);
+                    System.out.println("installed new markerclicklistener");
                 }
             }
         };
