@@ -3,6 +3,7 @@ package at.langhofer.yellowdesks;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +62,20 @@ public class DownloadWebimageTask extends AsyncTask<String, Void, String> {
         try {
             URL url = new URL(myurl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            String headervalue = null;
+            if (url.getUserInfo() != null) {
+                headervalue = String.format("Basic %s", Base64.encodeToString(url.getUserInfo().getBytes(), Base64.NO_WRAP));
+            } else {
+                if (Data.getInstance().loginDetails!=null) {
+                    headervalue = String.format("Basic %s", Base64.encodeToString( String.format("%s:%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password).getBytes(), Base64.NO_WRAP));
+                }
+            }
+            System.out.println("headervalue: " + headervalue);
+            if (headervalue != null)
+                conn.setRequestProperty("Authorization", headervalue);
+
+
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
