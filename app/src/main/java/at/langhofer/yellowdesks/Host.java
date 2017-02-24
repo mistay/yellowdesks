@@ -40,11 +40,13 @@ public class Host {
     private String open_from = null;
     private String open_till = null;
 
+    private Boolean getOpen247fixworkers = null;
+
     private Host() {
         // do not allow new Item()
     }
 
-    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
+    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Boolean getOpen247fixworkers, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -62,6 +64,7 @@ public class Host {
         this.extras = extras;
         this.open_from = open_from;
         this.open_till = open_till;
+        this.getOpen247fixworkers = getOpen247fixworkers;
         this.price_1day = price_1day;
         this.price_10days = price_10days;
         this.price_1month = price_1month;
@@ -100,7 +103,7 @@ public class Host {
 
     public String getOpenFrom() { return open_from; }
     public String getOpenTill() { return open_till; }
-
+    public Boolean getOpen247fixworkers ( ) { return getOpen247fixworkers; }
 
     public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
     public Bitmap getBitmap() { return this.bitmap; }
