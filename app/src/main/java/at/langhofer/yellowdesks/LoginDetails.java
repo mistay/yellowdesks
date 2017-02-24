@@ -5,12 +5,12 @@ package at.langhofer.yellowdesks;
  */
 
 public class LoginDetails {
-    static String username;
-    static String password;
-    static String firstname;
-    static String lastname;
+    public String username;
+    public String password;
+    public String firstname;
+    public String lastname;
 
-    public static void debug() {
+    public void debug() {
         System.out.println("login: " + username + " password: " + password + " firstname: " + firstname + " lastname: " + lastname );
     }
 
