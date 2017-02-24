@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class Data {
     List<Host> arrayOfList = new ArrayList<Host>();
     LoginDetails loginDetails = null;
@@ -70,32 +69,31 @@ public class Data {
         downloadWebTask.delegate = new TaskDelegate() {
             @Override
             public void taskCompletionResult(String raw) {
-                if (raw != null && raw != "") {
-                    try {
-                        JSONObject value = new JSONObject(raw);
-                        System.out.println("building new Login. error ?");
-                        System.out.println( value.getString("error") );
+            if (raw != null && raw != "") {
+                try {
+                    JSONObject value = new JSONObject(raw);
+                    System.out.println("building new Login. error ?");
+                    System.out.println( value.getString("error") );
 
-                        loginDetails = new LoginDetails();
-                        loginDetails.username = value.getString("username");
-                        loginDetails.password = password;
-                        loginDetails.firstname = value.getString("firstname");
-                        loginDetails.lastname = value.getString("lastname");
+                    loginDetails = new LoginDetails();
+                    loginDetails.username = value.getString("username");
+                    loginDetails.password = password;
+                    loginDetails.firstname = value.getString("firstname");
+                    loginDetails.lastname = value.getString("lastname");
 
-
-                        System.out.println("debugging new LoginDetails");
-                        loginDetails.debug();
-                        System.out.println("eof debugging new LoginDetails()");
-                    } catch (Exception e) {
-                        System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
-                    }
+                    System.out.println("debugging new LoginDetails");
+                    loginDetails.debug();
+                    System.out.println("eof debugging new LoginDetails()");
+                } catch (Exception e) {
+                    System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
                 }
+            }
 
-                // notify GUI
-                downloadFinished.taskCompletionResult("");
+            // notify GUI
+            downloadFinished.taskCompletionResult("");
             }
         };
-        downloadWebTask.execute("https://yellowdesks.com/users/login?username=" + username + "&password=" + password);
+        downloadWebTask.execute(String.format("https://%s:%s@yellowdesks.com/users/getdetails", username, password));
         System.out.println("sent login request");
     }
 
@@ -163,14 +161,15 @@ public class Data {
                                     value.getString("host"),
                                     Integer.parseInt(value.getString("desks")),
                                     Integer.parseInt(value.getString("desks_avail")),
-                                    Double.parseDouble( value.getString("lat")),
-                                    Double.parseDouble( value.getString("lng")),
+                                    value.getDouble("lat"),
+                                    value.getDouble("lng"),
                                     imageURL,
                                     list,
                                     details,
                                     extras,
-                                    value.getString("open_from") == "null" ? null : value.getString("open_from"),
+                                    value.getString("open_from").equals("null") ? null : value.getString("open_from"),
                                     value.getString("open_till") == "null" ? null : value.getString("open_till"),
+                                    value.getString("open_247fixworkers") == "null" ? null : value.getBoolean("open_247fixworkers"),
                                     price_1day,
                                     price_10days,
                                     price_1month,
@@ -194,7 +193,7 @@ public class Data {
                 }
             }
         };
-        downloadWebTask.execute("https://yellowdesks.com/hosts");
+        downloadWebTask.execute("https://@yellowdesks.com/hosts");
         System.out.println("sent download request");
     }
 
