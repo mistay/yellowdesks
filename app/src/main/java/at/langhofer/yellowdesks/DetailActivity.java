@@ -1,5 +1,6 @@
 package at.langhofer.yellowdesks;
 
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,30 +27,78 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PayPalRequest;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.PostalAddress;
+import com.paypal.android.sdk.payments.PayPalConfiguration;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class DetailActivity extends AppCompatActivity implements PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+
+public class DetailActivity extends AppCompatActivity {
     Host host;
+
+
+    /**
+     * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
+     *
+     * - Set to PayPalConfiguration.ENVIRONMENT_SANDBOX to use your test credentials
+     * from https://developer.paypal.com
+     *
+     * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
+     * without communicating to PayPal's servers.
+     */
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
+
+    // note that these credentials will differ between live & sandbox environments.
+    private static final String CONFIG_CLIENT_ID = "AWAYB0oayBfWbFgfqgRYGIpMUXfw_5YvgR6ObNbNfxOXvxnC0YwoZW0wvF9bIuPZwX8lrec0vTuTuJ-f";
+
+    private static final int REQUEST_CODE_PAYMENT = 1;
+    private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
+    private static final int REQUEST_CODE_PROFILE_SHARING = 3;
+
+    private static PayPalConfiguration config = new PayPalConfiguration()
+            .environment(CONFIG_ENVIRONMENT)
+            .clientId(CONFIG_CLIENT_ID)
+            // The following are only used in PayPalFuturePaymentActivity.
+            .merchantName("Yellowdesks")
+            .merchantPrivacyPolicyUri(Uri.parse("https://www.yellowdesks.com/privacy"))
+            .merchantUserAgreementUri(Uri.parse("https://www.yellowdesks.com/legal"));
+
+
+    @Override
+    public void onDestroy() {
+        // Stop service when done
+        stopService(new Intent(this, PayPalService.class));
+        super.onDestroy();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println(String.format("%d 5d", requestCode, resultCode));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
         Bundle b = getIntent().getExtras();
+
+
+
+        Intent intent = new Intent(this, PayPalService.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
+        startService(intent);
+
+
+
         long hostId = -1;
         if (b != null)
             hostId = b.getLong("hostId");
@@ -159,14 +208,9 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
                         host.setBitmapForImage( entry.getKey(), result );
                         System.out.println("taskCompletionResult: " + result);
-
-
-
-
-
                         }
                     };
-                    System.out.println("sending download request result: " + entry.getKey());
+                    System.out.println("sending download request: " + entry.getKey());
 
                     downloadWebimageTask.setTag( entry );
                     downloadWebimageTask.execute(entry.getKey());
@@ -211,7 +255,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         if (host.getOpenFrom() == null)
             tvOpeninghours.setText(String.format("Opening Hours: n/a"));
         else
-            tvOpeninghours.setText(String.format("Opening Hours: Mon %s till Sun %s", host.getOpenFrom(), host.getOpenTill()));
+            tvOpeninghours.setText(String.format("Opening Hours: Mon %s till Fri %s%s", host.getOpenFrom(), host.getOpenTill(), host.getOpen247fixworkers() ? "\nMember Access 24/7" : "" ));
 
         StringBuilder tmp= new StringBuilder();
         if (host.getPrice1Day() != null)
@@ -222,6 +266,7 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
             tmp.append ( String.format("1 month: %s EUR\n" , host.getPrice1Month()));
         if (host.getPrice1Day() != null)
             tmp.append ( String.format("6 months: %s EUR\n" , host.getPrice6Months()));
+        tmp.append ( String.format("prices excluding VAT\n") );
 
 
         System.out.println("host getPrice1Day(): " + host.getPrice1Day());
@@ -273,43 +318,45 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
 
 
-        BraintreeFragment mBraintreeFragment = null;
-        try {
-            String mAuthorization="production_t5tm8zyp_8jmd464425vhc6n2";
-            mBraintreeFragment = BraintreeFragment.newInstance(this, mAuthorization);
-            // mBraintreeFragment is ready to use!
 
-
-
-            System.out.println("braintree init complete.");
-            System.out.println("braintree: " + mAuthorization);
-
-        } catch (InvalidArgumentException e) {
-            System.out.println("exception braintree: " + e.toString());
-        }
-
-        final BraintreeFragment a = mBraintreeFragment;
 
         final Button btnPayNow = (Button) findViewById(R.id.btnPayNow);
         btnPayNow.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (a!=null)
 
-                    System.out.println("paypal started");
+                System.out.println("btnPayNow");
+
+                /*
+                 * PAYMENT_INTENT_SALE will cause the payment to complete immediately.
+                 * Change PAYMENT_INTENT_SALE to
+                 *   - PAYMENT_INTENT_AUTHORIZE to only authorize payment and capture funds later.
+                 *   - PAYMENT_INTENT_ORDER to create a payment for authorization and capture
+                 *     later via calls from your server.
+                 *
+                 * Also, to include additional payment details and an item list, see getStuffToBuy() below.
+                 */
+
+                if (price == null)
+                    System.out.println("price null, no payment sinnvoll");
+                else {
+
+                    PayPalPayment thingToBuy = new PayPalPayment( new BigDecimal( price ), "EUR", String.format("Yellow Desk %s - %s at host: %s", begin, end, host.getHost()),
+                            PayPalPayment.PAYMENT_INTENT_SALE );
+
+                /*
+                 * See getStuffToBuy(..) for examples of some available payment options.
+                 */
 
 
-                    PayPal.authorizeAccount(a);
+                    Intent intent = new Intent( DetailActivity.this, PaymentActivity.class );
 
-                    System.out.println("paypal authed");
+                    // send the same configuration for restart resiliency
+                    intent.putExtra( PayPalService.EXTRA_PAYPAL_CONFIGURATION, config );
 
+                    intent.putExtra( PaymentActivity.EXTRA_PAYMENT, thingToBuy );
 
-                PayPalRequest request = new PayPalRequest("0.01");
-                request.intent(PayPalRequest.INTENT_SALE);
-                //request.userAction(PayPalRequest.USER_ACTION_COMMIT);
-                PayPal.requestOneTimePayment(a, request);
-
-                System.out.println("paypal getPayPalRequest");
-
+                    startActivityForResult( intent, REQUEST_CODE_PAYMENT );
+                }
             }
         });
 
@@ -378,6 +425,9 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
         });
     }
 
+    Double price = null;
+    String begin="";
+    String end="";
     private void changedate() {
         System.out.println("changedate()");
         final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
@@ -393,7 +443,9 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
                     try {
                         JSONObject value = new JSONObject(raw);
                         Integer days = value.getInt( "count" );
-                        Double price = value.getDouble( "price" );
+                        begin = value.getString("begin");
+                        end = value.getString("end");
+                        price = value.getDouble( "price" );
                         if (price != null)
                             tvPricecalc.setText(String.format("Days: %s. Price: %s", days, NumberFormat.getCurrencyInstance().format(price)));
                         else
@@ -419,28 +471,4 @@ public class DetailActivity extends AppCompatActivity implements PaymentMethodNo
 
 
     }
-    @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        System.out.println("onpaymentmethodnoncecreated");
-        System.out.println("onpaymentmethodnoncecreated" + paymentMethodNonce);
-
-        PayPalAccountNonce paypalAccountNonce = (PayPalAccountNonce) paymentMethodNonce;
-        PostalAddress billingAddress = paypalAccountNonce.getBillingAddress();
-        String streetAddress = billingAddress.getStreetAddress();
-        String extendedAddress = billingAddress.getExtendedAddress();
-        String locality = billingAddress.getLocality();
-        String countryCodeAlpha2 = billingAddress.getCountryCodeAlpha2();
-        String postalCode = billingAddress.getPostalCode();
-        String region = billingAddress.getRegion();
-
-        System.out.println(String.format("%s %s %s %s %s %s", streetAddress, extendedAddress, locality, countryCodeAlpha2, postalCode, region));
-
-    }
-
-    @Override
-    public void onError(Exception error) {
-        System.out.println("error: " + error.toString());
-    }
-
-
 }
