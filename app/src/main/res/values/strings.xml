@@ -27,4 +27,8 @@
         <item>walk</item>
         <item>by car</item>
     </string-array>
+
+    <string name="prefLogintarget"></string>
+    <string name="prefUsername"></string>
+    <string name="prefPassword"></string>
 </resources>

@@ -20,7 +20,6 @@ import java.security.MessageDigest;
 
 import static android.R.attr.value;
 
-
 public class LoginOrRegisterActivity extends AppCompatActivity {
     private ImageView image1;
     private int[] imageArray;
@@ -29,20 +28,70 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
     private int endIndex = 0;
 
 
+    private void alreadyloggedin(String facebookid) {
+        // todo: send facebook id to yd servers and auth() on yd servers ...
+
+        // user already logged in in fb ->
+
+        // todo: redirect if login succeeded
+        //Intent myIntent = new Intent(LoginOrRegisterActivity.this, MapActivity.class);
+        //LoginOrRegisterActivity.this.startActivity(myIntent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         System.out.println ("Starting Yellow Desks ...");
 
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            Data.version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println (String.format("Yellow Desks v%s", Data.version));
+
+        String prefLogintarget = Data.getInstance().prefLoadString( LoggedInUser.PREFLOGINTARGET );
+        String prefUsername = Data.getInstance().prefLoadString( LoggedInUser.PREFUSERNAME );
+        String prefPassword = Data.getInstance().prefLoadString( LoggedInUser.PREFPASSWORD );
+
+        System.out.println(String.format("preflogintarget %s prefusername %s prefpass %s",  prefLogintarget, prefUsername, prefPassword));
+
+        final TaskDelegate taskDelegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String result) {
+                // data is ready
+                System.out.println( "data ready" );
+                LoginDetails loginDetails = Data.getInstance().loginDetails;
+
+                if (loginDetails != null) {
+                    System.out.println( "login successful, redirecting to map" );
+
+                    Intent myIntent = new Intent( LoginOrRegisterActivity.this, MapActivity.class );
+                    LoginOrRegisterActivity.this.startActivity( myIntent );
+                } else  {
+                    System.out.println( "login unsuccessful, stay here and display error (TODO)" );
+                }
+
+            }
+        };
 
 
+        if(prefLogintarget.equals( "yd" )){
+            System.out.println("try to login at yd api");
+            Data d = Data.getInstance();
+            d.login(prefUsername, prefPassword, taskDelegate);
 
+        }
+        System.out.println("done w/ login");
 
-// facebook login button//
+        // facebook login button//
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
-                    "at.langhofer.yellowdesks3",
+                    "at.langhofer.yellowdesks",
                     PackageManager.GET_SIGNATURES);
             for (android.content.pm.Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
@@ -52,7 +101,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         } catch (Exception e) {
             System.out.println ("Exception Facebook:" + e.getMessage());
         }
-        System.out.println ("Printed Keyhash");
+        System.out.println ("Printed Facebook Keyhash");
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -61,14 +110,13 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             final String id = Profile.getCurrentProfile().getId();
             System.out.println("fb access id: " + id);
             if (id != null) {
-                // user already logged in in fb ->
-                Intent myIntent = new Intent(LoginOrRegisterActivity.this, MapActivity.class);
-                LoginOrRegisterActivity.this.startActivity(myIntent);
+                alreadyloggedin(id);
             }
         }
         setContentView(R.layout.activity_login_or_register);
 
         final Button btnLogin = (Button) findViewById(R.id.btnLogin);
+
             btnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 System.out.println("login button pressed");
@@ -76,6 +124,9 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                 LoginOrRegisterActivity.this.startActivity(myIntent);
             }
         });
+
+
+
 
         final Button btnRegister = (Button) findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -101,18 +152,8 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
         endIndex--;
         nextImage();
 
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            Data.version = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
         TextView tvBy = (TextView)findViewById(R.id.tvBy);
         tvBy.setText(Data.getByString());
-
-
-
     }
 
     public void nextImage(){

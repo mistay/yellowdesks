@@ -1,6 +1,8 @@
 package at.langhofer.yellowdesks;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -52,28 +54,34 @@ public class LoginActivity extends AppCompatActivity {
 
         // regular (non-facebook) login button
         final Button btnLoginBackend = (Button) findViewById(R.id.btnLoginBackend);
+
+        String prefLogintarget = getPreferences( Context.MODE_PRIVATE).getString(LoggedInUser.PREFLOGINTARGET, "yd");
+        String prefUsername = getPreferences(Context.MODE_PRIVATE).getString( LoggedInUser.PREFUSERNAME , "");
+        String prefPassword = getPreferences(Context.MODE_PRIVATE).getString(LoggedInUser.PREFPASSWORD, "");
+
+        System.out.println(String.format("preflogintarget %s prefusername %s prefpass %s",  prefLogintarget, prefUsername, prefPassword));
+
         final EditText txtLoginEmail = (EditText) findViewById(R.id.txtLoginEmail);
+        txtLoginEmail.setText( prefUsername );
+
         final EditText txtLoginPassword = (EditText) findViewById(R.id.txtLoginPassword);
+        txtLoginPassword.setText( prefPassword );
 
 
-        // hook up data ready
         final TaskDelegate taskDelegate = new TaskDelegate() {
             @Override
             public void taskCompletionResult(String result) {
                 // data is ready
                 System.out.println( "data ready" );
-
                 LoginDetails loginDetails = Data.getInstance().loginDetails;
 
-                if (loginDetails.username != null) {
+                if (loginDetails != null) {
                     System.out.println( "login successful, redirecting to map" );
-
 
                     Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
                     LoginActivity.this.startActivity( myIntent );
                 } else  {
                     System.out.println( "login unsuccessful, stay here and display error (TODO)" );
-
                 }
 
             }
@@ -81,9 +89,20 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLoginBackend.setOnClickListener( new View.OnClickListener() {
             public void onClick(View v) {
+                System.out.println("setOnClickListener");
+
+                Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, "yd" );
+                Data.getInstance().prefSave( LoggedInUser.PREFUSERNAME, txtLoginEmail.getText().toString() );
+                Data.getInstance().prefSave( LoggedInUser.PREFPASSWORD, txtLoginPassword.getText().toString() );
+
+                System.out.println(String.format("saved pref: %s", txtLoginEmail.getText().toString()));
+
+                String prefUsername = getPreferences(Context.MODE_PRIVATE).getString(("username"), "");
+
+                txtLoginEmail.setText( prefUsername );
+
                 Data d = Data.getInstance();
-                d.login("armincoworker", "inhar1B*", taskDelegate);
-                //d.login(txtLoginEmail.getText().toString(), txtLoginPassword.getText().toString(), taskDelegate);
+                d.login(txtLoginEmail.getText().toString(), txtLoginPassword.getText().toString(), taskDelegate);
             }
         });
 
