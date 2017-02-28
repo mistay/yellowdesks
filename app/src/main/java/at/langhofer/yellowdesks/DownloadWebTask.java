@@ -99,7 +99,6 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                             System.out.println("login: " + url.getUserInfo());
                             //if (Data.getInstance().loginDetails.username != null)
 
-                            //todo: make dynamic
                             // e.g. Basic YXJtfaW5jbaedvcmtwelcjpafaepbmhhcjFCKaag==
                             String headervalue = null;
                             if (url.getUserInfo() != null) {
