@@ -1,8 +1,10 @@
 package at.langhofer.yellowdesks;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,6 +12,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class Data {
     List<Host> arrayOfList = new ArrayList<Host>();
@@ -26,16 +30,29 @@ public class Data {
     private Data() {
     }
 
+    public void prefSave(String key, String value) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public String prefLoadString(String key) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getString(key, "");
+    }
+
     public static int colorYellowdesks() {
         return Color.argb(100, 249, 233, 63);
     }
-
 
     public static String version = "";
     public static String getByString() {
         PackageInfo pInfo = null;
         return "by COWORKINGSALZBURG " + ((version != "") ? "(v" + version + ")" : "");
     }
+
     public void sendBookingRequest(Host host, java.util.Date date, final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {
@@ -93,8 +110,10 @@ public class Data {
             downloadFinished.taskCompletionResult("");
             }
         };
-        downloadWebTask.execute(String.format("https://%s:%s@yellowdesks.com/users/getdetails", username, password));
-        System.out.println("sent login request");
+
+        String url = String.format("https://%s:%s@yellowdesks.com/users/getdetails", username, password);
+        downloadWebTask.execute(url);
+        System.out.println("sent login request: " + url);
     }
 
     public void downloadImage(final Host host, final DelegateImageDownloaded downloadFinished) {
@@ -193,10 +212,9 @@ public class Data {
                 }
             }
         };
-        downloadWebTask.execute("https://@yellowdesks.com/hosts");
+        downloadWebTask.execute("https://yellowdesks.com/hosts");
         System.out.println("sent download request");
     }
-
 
     public List<Host> getData() {
         return arrayOfList;
