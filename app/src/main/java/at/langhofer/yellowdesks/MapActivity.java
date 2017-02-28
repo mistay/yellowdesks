@@ -278,6 +278,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        // default auf 30min radius
+        spinner.setSelection( adapter.getPosition( "30" ) );
+
         spinner.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
