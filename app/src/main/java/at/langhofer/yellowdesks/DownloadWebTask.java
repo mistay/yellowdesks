@@ -82,18 +82,19 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
                 do {
                     for (InetAddress inetAddress : addresses) {
-                        String headervalue = null;
-                        System.out.println( String.format( "current ip address for host %s: %s", inetAddress.getHostName(), inetAddress.getHostAddress() ) );
+                        String authorization = null;
+                        System.out.println( String.format("current ip address for host %s: %s", inetAddress.getHostName(), inetAddress.getHostAddress() ) );
                         try {
                             conn = (HttpsURLConnection) url.openConnection();
                             System.out.println( "login: " + url.getUserInfo() );
 
                             // e.g. Basic YXJtfaW5jbaedvcmtwelcjpafaepbmhhcjFCKaag==
                             if (url.getUserInfo() != null) {
-                                headervalue = String.format( "Basic %s", Base64.encodeToString( url.getUserInfo().getBytes(), Base64.NO_WRAP ) );
+                                authorization = String.format( "Basic %s", Base64.encodeToString( url.getUserInfo().getBytes(), Base64.NO_WRAP ) );
                             } else {
                                 if (Data.getInstance().loginDetails != null) {
-                                    headervalue = String.format( "Basic %s", Base64.encodeToString( String.format( "%s:%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password ).getBytes(), Base64.NO_WRAP ) );
+                                    authorization = String.format( "Basic %s", Base64.encodeToString( String.format( "%s:%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password ).getBytes(), Base64.NO_WRAP ) );
+                                    System.out.println(String.format("l/p: %s %s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password ));
                                 }
                             }
                         } catch (Exception e) {
@@ -107,8 +108,12 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                         conn.setConnectTimeout( 15000 );
                         conn.setRequestMethod( "GET" );
 
-                        if (Data.getInstance().loginDetails!=null)
-                            conn.setRequestProperty( "logintarget", Data.getInstance().loginDetails.loginTarget.toString());
+                        if (Data.getInstance().loginDetails != null)
+                            conn.setRequestProperty( "LOGINTARGET", Data.getInstance().loginDetails.loginTarget.toString());
+
+                        // todo: sauberes konzept überlegen wie man fb + logintarget machen könnte
+                        if ((url.getUserInfo() != null && url.getUserInfo().startsWith( "dummy" )))
+                            conn.setRequestProperty( "LOGINTARGET", LoginDetails.Logintargets.FACEBOOK.toString());
 
                         //conn.setRequestProperty( "Host", "yellowdesks.com" );
                         //System.out.println( "Host: " + "yellowdesks.com" );
@@ -127,10 +132,10 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                             continue;
                         }
 
-                        if (headervalue != null)
-                            conn.setRequestProperty( "Authorization", headervalue );
-
-                        System.out.println( "headervalue: " + headervalue );
+                        if (authorization != null) {
+                            conn.setRequestProperty( "Authorization", authorization );
+                            System.out.println( "Authorization: " + authorization );
+                        }
 
                         conn.setDoInput( true );
 
@@ -150,8 +155,6 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                             System.out.println( "socket: could not connect to: " + inetAddress.getHostAddress() + " host: " + inetAddress.getHostName() + " exception: " + e.toString() );
                             System.out.println( "-------- next host ----------" );
                             continue;
-                        } finally {
-
                         }
 
                         int response = conn.getResponseCode();
