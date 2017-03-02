@@ -89,8 +89,14 @@ public class Data {
             if (raw != null && raw != "") {
                 try {
                     JSONObject value = new JSONObject(raw);
-                    System.out.println("building new Login. error ?");
-                    System.out.println( value.getString("error") );
+                    System.out.println("building new Login.");
+                    System.out.println( "err from json: " + value.getString("error") + " equals:  " +  (value.getString("error").equals("")) );
+
+                    if (!value.getString("error").equals("")) {
+                        //notify gui
+                        downloadFinished.taskCompletionResult(value.getString("error"));
+                        return;
+                    }
 
                     loginDetails = new LoginDetails();
                     loginDetails.username = value.getString("username");
@@ -111,6 +117,7 @@ public class Data {
             }
         };
 
+        loginDetails = null;
         String url = String.format("https://%s:%s@yellowdesks.com/users/getdetails", username, password);
         downloadWebTask.execute(url);
         System.out.println("sent login request: " + url);
