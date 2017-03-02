@@ -59,6 +59,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 txtLoginError.setText("");
+
+
             }
         } );
 
@@ -72,12 +74,12 @@ public class LoginActivity extends AppCompatActivity {
 
         System.out.println(String.format("preflogintarget %s prefusername %s prefpass %s",  prefLogintarget, prefUsername, prefPassword));
 
-        final EditText txtLoginEmail = (EditText) findViewById(R.id.txtLoginEmail);
+        final EditText txtLoginEmail = (EditText) findViewById( R.id.txtLoginEmail);
         txtLoginEmail.setText( prefUsername );
 
-        final EditText txtLoginPassword = (EditText) findViewById(R.id.txtLoginPassword);
-        txtLoginPassword.setText( prefPassword );
-
+        final EditText txtLoginPassword = (EditText) findViewById( R.id.txtLoginPassword);
+        if (Data.getInstance().loginDetails != null && Data.getInstance().loginDetails.loginTarget == LoginDetails.Logintargets.YD)
+            txtLoginPassword.setText( prefPassword );
 
         txtLoginPassword.setOnKeyListener( new View.OnKeyListener() {
             @Override
@@ -86,8 +88,6 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         } );
-
-
 
         final TaskDelegate taskDelegate = new TaskDelegate() {
             @Override
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 txtLoginError.setText( "" );
 
-                Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, "yd" );
+                Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, LoginDetails.Logintargets.YD.toString() );
                 Data.getInstance().prefSave( LoggedInUser.PREFUSERNAME, txtLoginEmail.getText().toString() );
                 Data.getInstance().prefSave( LoggedInUser.PREFPASSWORD, txtLoginPassword.getText().toString() );
 
@@ -132,35 +132,17 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 System.out.println("fb login: result " + loginResult.toString());
-                AccessToken accessToken = loginResult.getAccessToken();
+                final AccessToken accessToken = loginResult.getAccessToken();
                 System.out.println("fb accessToken: " + accessToken.toString());
+
+
+
+
+
                 //System.out.println("fb accessToken app id: " + accessToken.getApplicationId());
                 System.out.println("fb accessToken token: " + accessToken.getToken());
 
-                DownloadWebTask downloadWebTask = new DownloadWebTask();
-                downloadWebTask.delegate = new TaskDelegate() {
-                    @Override
-                    public void taskCompletionResult(String raw) {
-                        System.out.println("fb yd backend login result");
-                        if (raw != null && raw != "") {
-                            try {
-                                JSONObject value = new JSONObject(raw);
-                                System.out.println("result of loginappfb");
-                                System.out.println(value.getBoolean("success"));
-                                if (value.getBoolean("success")) {
-                                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
-                                    LoginActivity.this.startActivity( myIntent );
-                                }
-                                System.out.println("eof debugging new loginappfb()");
-                            } catch (Exception e) {
-                                System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
-                            }
-                        }
 
-                    }
-                };
-                downloadWebTask.execute("https://yellowdesks.com/users/loginappfb/" + accessToken.getToken());
-                System.out.println("sent fb login request to yd server");
 
 
 
@@ -178,25 +160,27 @@ public class LoginActivity extends AppCompatActivity {
                                     System.out.println("facbook key: " + i.next());
                                 }
 
-
                                 // Application code
                                 try {
-
-                                    LoggedInUser.email = object.getString("email");
-                                    LoggedInUser.realname =object.getString("name");
-
-                                    System.out.println("email: " + LoggedInUser.email);
-                                    System.out.println("realname: " + LoggedInUser.realname);
-
                                     txtLoginError.setTextColor( Color.YELLOW );
-                                    txtLoginError.setText("Facebook Auth successful. E-Mail: " + LoggedInUser.email + ". Now performing YD Backend login ...");
+                                    txtLoginError.setText("Facebook Auth successful. E-Mail: " + object.getString("email") + " name: " + object.getString("name") + ". Now performing YD Backend login ...");
 
-                                    //todo (important!): check in backend if login succeeded
-                                    // Data.getInstance().loginViaFacebook(LoggedInUser.email);
+                                    LoginDetails loginDetails = new LoginDetails();
+                                    loginDetails.username = object.getString("email");
+                                    loginDetails.password = accessToken.getToken();
+                                    loginDetails.firstname = object.getString("name");
+                                    loginDetails.lastname = "TODO";
+                                    loginDetails.loginTarget = LoginDetails.Logintargets.FACEBOOK;
+
+                                    Data.getInstance().prefSave( LoggedInUser.PREFUSERNAME, "" );
+                                    Data.getInstance().prefSave( LoggedInUser.PREFPASSWORD, accessToken.getToken() );
+                                    Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, LoginDetails.Logintargets.FACEBOOK.toString() );
 
 
-                                    // brauchen wir e-mail und realname von facebook hier in der app?
+                                    Data.getInstance().loginDetails = loginDetails;
 
+
+                                    Data.getInstance().loginfb( accessToken.getToken(), taskDelegate );
 
                                 } catch (Exception e) {
                                     System.out.println("exc: " + e.toString());
