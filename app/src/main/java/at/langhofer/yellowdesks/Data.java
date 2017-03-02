@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -81,6 +82,56 @@ public class Data {
         downloadWebTask.execute( String.format("https://yellowdesks.com/bookings/bookingrequest/?username=%s&password=%s&host_id=%d&date=%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password, host.getId(), "20170101"));
     }
 
+    public void loginfb(final String accesstoken, final TaskDelegate downloadFinished) {
+        DownloadWebTask downloadWebTask = new DownloadWebTask();
+        downloadWebTask.delegate = new TaskDelegate() {
+            @Override
+            public void taskCompletionResult(String raw) {
+                System.out.println("fb yd backend login result");
+                if (raw != null && raw != "") {
+                    try {
+                        JSONObject value = new JSONObject(raw);
+                        System.out.println("result of loginappfb");
+
+                        Iterator<String> keysIterator = value.keys();
+                        while (keysIterator.hasNext())
+                        {
+                            String keyStr = (String)keysIterator.next();
+                            String valueStr = value.getString(keyStr);
+
+                            System.out.println("fb yd result: " + keyStr + ": " + valueStr);
+                        }
+
+                        System.out.println(value.getBoolean("success"));
+                        if (value.getBoolean("success")) {
+
+                            JSONObject loggedinuser = value.getJSONObject(  "loggedinuser") ;
+
+                            loginDetails = new LoginDetails();
+                            loginDetails.firstname = loggedinuser.getString( "firstname" );
+                            loginDetails.lastname = loggedinuser.getString( "lastname" );
+                            loginDetails.username = "TODO";
+                            loginDetails.password = accesstoken;
+                            loginDetails.loginTarget = LoginDetails.Logintargets.FACEBOOK;
+
+                        } else {
+                            System.out.println("no success auth()in w/ facebook. raw: " + raw);
+                        }
+                        System.out.println("eof debugging new loginappfb()");
+                    } catch (Exception e) {
+                        System.out.println("could not parse loginappfb json: " + raw + ". exception: " + e.toString());
+                    }
+                }
+
+                // notify GUI
+                downloadFinished.taskCompletionResult("");
+
+            }
+        };
+        downloadWebTask.execute(String.format("https://dummy:%s@yellowdesks.com/users/loginappfb", accesstoken));
+        System.out.println("sent fb login request to yd server");
+    }
+
     public void login(final String username, final String password, final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {
@@ -103,6 +154,7 @@ public class Data {
                     loginDetails.password = password;
                     loginDetails.firstname = value.getString("firstname");
                     loginDetails.lastname = value.getString("lastname");
+                    loginDetails.loginTarget = LoginDetails.Logintargets.YD;
 
                     System.out.println("debugging new LoginDetails");
                     loginDetails.debug();
