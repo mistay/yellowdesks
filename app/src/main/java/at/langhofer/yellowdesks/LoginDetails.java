@@ -5,10 +5,16 @@ package at.langhofer.yellowdesks;
  */
 
 public class LoginDetails {
-    public String username;
-    public String password;
-    public String firstname;
-    public String lastname;
+    public String username = "";
+    public String password = "";
+    public String firstname = "";
+    public String lastname = "";
+    public Logintargets loginTarget = null;
+
+    public enum Logintargets {
+        YD,
+        FACEBOOK,
+    }
 
     public void debug() {
         System.out.println("login: " + username + " password: " + password + " firstname: " + firstname + " lastname: " + lastname );
