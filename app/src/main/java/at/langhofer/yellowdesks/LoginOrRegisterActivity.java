@@ -40,7 +40,10 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+
 
         System.out.println ("Starting Yellow Desks ...");
 
@@ -73,12 +76,11 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
                     Intent myIntent = new Intent( LoginOrRegisterActivity.this, MapActivity.class );
                     LoginOrRegisterActivity.this.startActivity( myIntent );
                 } else  {
-                    System.out.println( "login unsuccessful, stay here and display error (TODO)" );
+                    System.out.println( "login failed: " + result );
                 }
 
             }
         };
-
 
         if(prefLogintarget.equals( "yd" )){
             System.out.println("try to login at yd api");
