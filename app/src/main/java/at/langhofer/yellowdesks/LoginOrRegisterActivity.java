@@ -82,12 +82,17 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
             }
         };
 
-        if(prefLogintarget.equals( "yd" )){
+        if (prefLogintarget.equals( LoginDetails.Logintargets.YD.toString() )) {
             System.out.println("try to login at yd api");
-            Data d = Data.getInstance();
-            d.login(prefUsername, prefPassword, taskDelegate);
-
+            Data.getInstance().login(prefUsername, prefPassword, taskDelegate);
         }
+
+        if (prefLogintarget.equals( LoginDetails.Logintargets.FACEBOOK.toString() )) {
+            System.out.println("try to login at facebook");
+
+            Data.getInstance().loginfb(prefPassword, taskDelegate);
+        }
+
         System.out.println("done w/ login");
 
         // facebook login button//
