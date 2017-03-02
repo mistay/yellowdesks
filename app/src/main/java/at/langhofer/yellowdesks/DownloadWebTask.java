@@ -19,10 +19,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 import static android.R.attr.port;
 
-/**
- * Created by arminlanghofer on 20.11.16.
- */
-
 public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
     public TaskDelegate delegate;
@@ -110,6 +106,10 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                         conn.setReadTimeout( 10000 );
                         conn.setConnectTimeout( 15000 );
                         conn.setRequestMethod( "GET" );
+
+                        if (Data.getInstance().loginDetails!=null)
+                            conn.setRequestProperty( "logintarget", Data.getInstance().loginDetails.loginTarget.toString());
+
                         //conn.setRequestProperty( "Host", "yellowdesks.com" );
                         //System.out.println( "Host: " + "yellowdesks.com" );
 
