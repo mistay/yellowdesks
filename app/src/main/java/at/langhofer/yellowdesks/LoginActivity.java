@@ -115,6 +115,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 System.out.println("setOnClickListener");
 
+                Data.getInstance().loginDetails = null;
+
                 txtLoginError.setText( "" );
 
                 Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, LoginDetails.Logintargets.YD.toString() );

@@ -12,9 +12,11 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -117,6 +119,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 youMarker.remove();
                 youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
                 youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
+                youMarker.setZIndex( 0.1f );
+
+
 
                 centerAndZoomCamera();
             } else {
@@ -160,6 +165,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                     LatLng latlng = new LatLng( host.getLat(), host.getLng() );
                     System.out.println(String.format("new Marker %s for host %s", latlng.toString(), host.getHost()));
                     Marker myMarker = mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
+
+                    host.marker = myMarker;
 
                     // attaching host to marker to retreive in OnMarkerClickListener
                     myMarker.setTag(host);
@@ -238,14 +245,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         client = new GoogleApiClient.Builder( this ).addApi( AppIndex.API ).build();
 
 
+        final ToggleButton btnOpenNow = (ToggleButton) findViewById( R.id.btnOpenNow );
+        ((Button) btnOpenNow).setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Host> hosts = Data.getInstance().getHosts();
 
-
-
-
-
-
-
-
+                if (btnOpenNow.isChecked()) {
+                    for (Host host : hosts) {
+                        Marker m = host.marker;
+                        m.setVisible( true );
+                    }
+                } else {
+                    for (Host host : hosts) {
+                        Marker m = host.marker;
+                        m.setVisible( host.isOpenNow() );
+                    }
+                }
+            }
+        });
 
 
 

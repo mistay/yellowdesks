@@ -2,6 +2,11 @@ package at.langhofer.yellowdesks;
 
 import android.graphics.Bitmap;
 
+import com.google.android.gms.maps.model.Marker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -40,13 +45,16 @@ public class Host {
     private String open_from = null;
     private String open_till = null;
 
-    private Boolean getOpen247fixworkers = null;
+    private Boolean open247fixworkers = null;
+
+
+    public Marker marker;
 
     private Host() {
         // do not allow new Item()
     }
 
-    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Boolean getOpen247fixworkers, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
+    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Boolean open247fixworkers, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -64,7 +72,7 @@ public class Host {
         this.extras = extras;
         this.open_from = open_from;
         this.open_till = open_till;
-        this.getOpen247fixworkers = getOpen247fixworkers;
+        this.open247fixworkers = open247fixworkers;
         this.price_1day = price_1day;
         this.price_10days = price_10days;
         this.price_1month = price_1month;
@@ -100,10 +108,9 @@ public class Host {
 
     public String getTitle() { return title; }
 
-
     public String getOpenFrom() { return open_from; }
     public String getOpenTill() { return open_till; }
-    public Boolean getOpen247fixworkers ( ) { return getOpen247fixworkers; }
+    public Boolean getOpen247fixworkers ( ) { return open247fixworkers; }
 
     public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
     public Bitmap getBitmap() { return this.bitmap; }
@@ -116,8 +123,6 @@ public class Host {
         return images;
     }
 
-
-
     public String getVideoURL() { return videoURL; }
 
     public Float getPrice1Day(){ return price_1day; }
@@ -125,9 +130,40 @@ public class Host {
     public Float getPrice1Month(){ return price_1month; }
     public Float getPrice6Months(){ return price_6months; }
 
-
-
     public String getHostDetails() {
         return details;
+    }
+
+    public Boolean isOpenNow() {
+        if (open247fixworkers)
+            return true;
+
+        if (open_from == null || open_till == null)
+            return false;
+
+        try {
+            Date time1 = new SimpleDateFormat("HH:mm:ss").parse(open_from);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+
+            Date time2 = new SimpleDateFormat("HH:mm:ss").parse(open_till);
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+            calendar2.add(Calendar.DATE, 1);
+
+            Date d = new Date();
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTime(d);
+            calendar3.add(Calendar.DATE, 1);
+
+            Date x = calendar3.getTime();
+            if (x.after(calendar1.getTime()) && x.before(calendar2.getTime())) {
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("exception determing open:" + e.toString());
+        }
+
+        return false;
     }
 }

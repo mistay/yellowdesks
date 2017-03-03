@@ -286,4 +286,9 @@ public class Data {
         }
         return null;
     }
+
+    public List<Host> getHosts() {
+        return arrayOfList;
+    }
+
 }
