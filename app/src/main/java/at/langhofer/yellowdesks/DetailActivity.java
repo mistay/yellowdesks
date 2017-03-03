@@ -27,14 +27,10 @@ import android.widget.Space;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -44,31 +40,7 @@ public class DetailActivity extends AppCompatActivity {
     Host host;
 
 
-    /**
-     * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
-     *
-     * - Set to PayPalConfiguration.ENVIRONMENT_SANDBOX to use your test credentials
-     * from https://developer.paypal.com
-     *
-     * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
-     * without communicating to PayPal's servers.
-     */
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
 
-    // note that these credentials will differ between live & sandbox environments.
-    private static final String CONFIG_CLIENT_ID = "AWAYB0oayBfWbFgfqgRYGIpMUXfw_5YvgR6ObNbNfxOXvxnC0YwoZW0wvF9bIuPZwX8lrec0vTuTuJ-f";
-
-    private static final int REQUEST_CODE_PAYMENT = 1;
-    private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
-    private static final int REQUEST_CODE_PROFILE_SHARING = 3;
-
-    private static PayPalConfiguration config = new PayPalConfiguration()
-            .environment(CONFIG_ENVIRONMENT)
-            .clientId(CONFIG_CLIENT_ID)
-            // The following are only used in PayPalFuturePaymentActivity.
-            .merchantName("Yellowdesks")
-            .merchantPrivacyPolicyUri(Uri.parse("https://www.yellowdesks.com/privacy"))
-            .merchantUserAgreementUri(Uri.parse("https://www.yellowdesks.com/legal"));
 
 
     @Override
@@ -93,9 +65,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-        Intent intent = new Intent(this, PayPalService.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
-        startService(intent);
+
 
 
 
@@ -305,14 +275,38 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
+        Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        System.out.println(String.format("day: %d month: %d year: %d", day, month, year));
 
-        final Button btnBookNow = (Button) findViewById(R.id.btnBookNow);
-        btnBookNow.setOnClickListener(new View.OnClickListener() {
+
+        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
+        dpFrom.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                changedate();
+            }
+        });
+
+        final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
+        dpTo.init(year, month, day, new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
+                changedate();
+            }
+        });
+
+        final Button btnNextStep = (Button) findViewById(R.id.btnNextStep);
+        btnNextStep.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                System.out.println("btnBookNow button clicked");
-                Intent myIntent = new Intent(DetailActivity.this, BookingresponseActivity.class);
+                System.out.println("btnNextStep button clicked");
+                Intent myIntent = new Intent( DetailActivity.this, BookingreviewActivity.class );
                 myIntent.putExtra("hostId", host.getId());
-                DetailActivity.this.startActivity(myIntent);
+                myIntent.putExtra("from", dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth());
+                myIntent.putExtra("to", dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth());
+                startActivity(myIntent);
             }
         });
 
@@ -320,45 +314,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-        final Button btnPayNow = (Button) findViewById(R.id.btnPayNow);
-        btnPayNow.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-                System.out.println("btnPayNow");
-
-                /*
-                 * PAYMENT_INTENT_SALE will cause the payment to complete immediately.
-                 * Change PAYMENT_INTENT_SALE to
-                 *   - PAYMENT_INTENT_AUTHORIZE to only authorize payment and capture funds later.
-                 *   - PAYMENT_INTENT_ORDER to create a payment for authorization and capture
-                 *     later via calls from your server.
-                 *
-                 * Also, to include additional payment details and an item list, see getStuffToBuy() below.
-                 */
-
-                if (price == null)
-                    System.out.println("price null, no payment sinnvoll");
-                else {
-
-                    PayPalPayment thingToBuy = new PayPalPayment( new BigDecimal( price ), "EUR", String.format("Yellow Desk %s - %s at host: %s", begin, end, host.getHost()),
-                            PayPalPayment.PAYMENT_INTENT_SALE );
-
-                /*
-                 * See getStuffToBuy(..) for examples of some available payment options.
-                 */
-
-
-                    Intent intent = new Intent( DetailActivity.this, PaymentActivity.class );
-
-                    // send the same configuration for restart resiliency
-                    intent.putExtra( PayPalService.EXTRA_PAYPAL_CONFIGURATION, config );
-
-                    intent.putExtra( PaymentActivity.EXTRA_PAYMENT, thingToBuy );
-
-                    startActivityForResult( intent, REQUEST_CODE_PAYMENT );
-                }
-            }
-        });
 
 
 
@@ -401,28 +356,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        System.out.println(String.format("day: %d month: %d year: %d", day, month, year));
-
-
-        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
-        dpFrom.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                changedate();
-            }
-        });
-
-        final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
-        dpTo.init(year, month, day, new DatePicker.OnDateChangedListener() {
-            @Override
-            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
-                changedate();
-            }
-        });
     }
 
     Double price = null;
@@ -430,8 +363,8 @@ public class DetailActivity extends AppCompatActivity {
     String end="";
     private void changedate() {
         System.out.println("changedate()");
-        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
         final DatePicker dpTo = (DatePicker) findViewById(R.id.dpTo);
+        final DatePicker dpFrom = (DatePicker) findViewById(R.id.dpFrom);
 
         final TextView tvPricecalc = (TextView) findViewById( R.id.tvPricecalc );
 
