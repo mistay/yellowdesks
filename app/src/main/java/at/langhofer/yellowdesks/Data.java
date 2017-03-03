@@ -105,7 +105,7 @@ public class Data {
                         System.out.println(value.getBoolean("success"));
                         if (value.getBoolean("success")) {
 
-                            JSONObject loggedinuser = value.getJSONObject(  "loggedinuser") ;
+                            JSONObject loggedinuser = value.getJSONObject( "loggedinuser" ) ;
 
                             loginDetails = new LoginDetails();
                             loginDetails.firstname = loggedinuser.getString( "firstname" );
@@ -197,7 +197,7 @@ public class Data {
                 if (raw != null && raw != "") {
                     try {
                         JSONArray jsonArray = new JSONArray(raw);
-                        System.out.println("created jsonObject: " + jsonArray.toString());
+                        System.out.println("created jsonArray: " + jsonArray.toString());
 
                         arrayOfList.clear();
                         for (int i=0; i<jsonArray.length(); i++) {
