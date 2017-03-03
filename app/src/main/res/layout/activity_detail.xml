@@ -120,8 +120,10 @@
                     android:layout_height="wrap_content"
                     android:calendarViewShown="false"
                     android:headerBackground="#ff0000"
+                    android:datePickerMode="spinner"
                     >
                 </DatePicker>
+                <!-- android:datePickerMode="spinner": galaxy 5 compatibility -->
             </LinearLayout>
 
             <LinearLayout
@@ -135,6 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:calendarViewShown="false"
+                    android:datePickerMode="spinner"
                     >
                 </DatePicker>
             </LinearLayout>
@@ -163,28 +166,31 @@
                 android:layout_weight="1" />
     -->
             <Button
-                android:text="book now"
+                android:text="Next"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnBookNow"
-                android:layout_weight="1" />
+                android:layout_height="50dp"
+                android:id="@+id/btnNextStep"
+                android:layout_weight="1"
+                android:background="@color/yellwdesksBlack"
+                android:textColor="@color/yellwdesksYellow"
+                />
 
-            <Button
-                android:text="pay now"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnPayNow"
-                android:layout_weight="1" />
+            <Space
+                android:layout_width="5px"
+                android:layout_height="50dp"/>
 
             <ImageButton
                 android:id="@+id/btnBacktomap"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:src="@drawable/mapicon"
                 android:background="#000000"
                 />
-        </LinearLayout>
 
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12dp"/>
     </LinearLayout>
 </ScrollView>
