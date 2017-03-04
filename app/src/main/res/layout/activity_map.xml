@@ -95,7 +95,7 @@
                     android:background="@color/yellwdesksBlack"
 
                     android:textColor="@color/yellwdesksYellow"
-                    android:textOn="Now Open"
+                    android:textOn="Open Now"
                     android:textOff="All"
                     />
                 <Space

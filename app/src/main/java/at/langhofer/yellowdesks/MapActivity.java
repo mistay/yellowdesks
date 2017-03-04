@@ -251,7 +251,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             public void onClick(View view) {
                 List<Host> hosts = Data.getInstance().getHosts();
 
-                if (btnOpenNow.isChecked()) {
+                if (!btnOpenNow.isChecked()) {
                     for (Host host : hosts) {
                         Marker m = host.marker;
                         m.setVisible( true );
