@@ -1,15 +1,17 @@
 package at.langhofer.yellowdesks;
 
-
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,29 +21,20 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.Space;
 import android.widget.TextView;
-import android.widget.VideoView;
-
 import com.paypal.android.sdk.payments.PayPalService;
-
 import org.json.JSONObject;
-
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-
 public class DetailActivity extends AppCompatActivity {
+
     Host host;
-
-
-
-
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
 
     @Override
     public void onDestroy() {
@@ -49,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
         stopService(new Intent(this, PayPalService.class));
         super.onDestroy();
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -62,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Bundle b = getIntent().getExtras();
+
 
 
 
@@ -83,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
 
-        final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
+        //final LinearLayout llimages = (LinearLayout) findViewById( R.id.llimages );
 
 
         final Dialog dialogFullscreenImage = new Dialog(DetailActivity.this,android.R.style.Theme_Translucent);
@@ -112,6 +105,11 @@ public class DetailActivity extends AppCompatActivity {
         } );
 
 
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+
+
 
 
         HashMap<String, Bitmap> images = host.getImages();
@@ -120,16 +118,16 @@ public class DetailActivity extends AppCompatActivity {
             for (HashMap.Entry<String, Bitmap> entry : images.entrySet()) {
                 Bitmap bitmap = entry.getValue();
 
-                System.out.println("adding imageview. width parent: " + llimages.getWidth());
-                final ImageView ivImage = new ImageView( this );
+                //System.out.println("adding imageview. width parent: " + llimages.getWidth());
+                //final ImageView ivImage = new ImageView( this );
 
                 final Space space = new Space(this);
                 space.setMinimumHeight( 20 );
 
-                ivImage.setMinimumWidth( llimages.getWidth() );
-                ivImage.setMinimumHeight( 500 );
-                ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
+                //ivImage.setMinimumWidth( llimages.getWidth() );
+                //ivImage.setMinimumHeight( 500 );
+                //ivImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+/*
                 ivImage.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -140,6 +138,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 } );
 
+*/
 
 
 
@@ -148,20 +147,19 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-
-                llimages.addView( ivImage );
-                llimages.addView ( space );
+                //llimages.addView( ivImage );
+                //llimages.addView ( space );
 
                 if (bitmap == null) {
                     // download
 
                     RotateAnimation anim = new RotateAnimation(0f, 360, 0, 0 );
-                    System.out.println("pivot: " + ivImage.getWidth()/2);
+                    //System.out.println("pivot: " + ivImage.getWidth()/2);
                     anim.setInterpolator(new LinearInterpolator());
                     anim.setRepeatCount( Animation.INFINITE);
                     anim.setDuration(1000);
-                    ivImage.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.loader ));
-                    ivImage.startAnimation( anim );
+                    //ivImage.setImageBitmap( BitmapFactory.decodeResource(getResources(), R.drawable.loader ));
+                    //ivImage.startAnimation( anim );
 
                     DownloadWebimageTask downloadWebimageTask = new DownloadWebimageTask();
                     downloadWebimageTask.delegate = new DelegateImageDownloaded() {
@@ -173,11 +171,19 @@ public class DetailActivity extends AppCompatActivity {
 
                         entry.setValue( result );
 
-                        ivImage.setAnimation(null);
-                        ivImage.setImageBitmap( entry.getValue() );
+                            //ivImage.setAnimation(null);
+                            //ivImage.setImageBitmap( entry.getValue() );
 
                         host.setBitmapForImage( entry.getKey(), result );
-                        System.out.println("taskCompletionResult: " + result);
+
+                            try {
+                                mPagerAdapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+                                System.out.println("notifyDataSetChanged exc: " + e.toString());
+
+                            }
+                           // mPager.invalidate();
+                            System.out.println("taskCompletionResult: " + result);
                         }
                     };
                     System.out.println("sending download request: " + entry.getKey());
@@ -186,9 +192,9 @@ public class DetailActivity extends AppCompatActivity {
                     downloadWebimageTask.execute(entry.getKey());
                 } else {
 
-                    ivImage.setAnimation(null);
-                    System.out.println("setting image from already downloaded cache");
-                    ivImage.setImageBitmap( bitmap );
+                    //ivImage.setAnimation(null);
+                    //System.out.println("setting image from already downloaded cache");
+                    //ivImage.setImageBitmap( bitmap );
 
 
 
@@ -218,7 +224,7 @@ public class DetailActivity extends AppCompatActivity {
         //root.setBackgroundColor(  Data.colorYellowdesks()  );
 
         final TextView tvExtras = (TextView) findViewById(R.id.tvExtras);
-        tvExtras.setText("Extra: " + host.getExtras());
+        tvExtras.setText("Extras: " +  (host.getExtras() == "" ? "none" : host.getExtras()));
 
 
         final TextView tvOpeninghours = (TextView) findViewById(R.id.tvOpeninghours);
@@ -247,13 +253,13 @@ public class DetailActivity extends AppCompatActivity {
         hostDetails.setText( String.format("%s\n%s desks available", host.getTitle(), host.getAvailableDesks()) );
 
 
-        final ImageView detailImage = (ImageView) findViewById(R.id.detailimage);
+        //final ImageView detailImage = (ImageView) findViewById(R.id.detailimage);
 
 //        Drawable drawable = getResources().getDrawable(R.drawable.alex);
 
-        if (host.getBitmap()!=null)
-            detailImage.setImageDrawable(new BitmapDrawable(host.getBitmap()));
-        else {
+        if (host.getBitmap()!=null) {
+            //detailImage.setImageDrawable(new BitmapDrawable(host.getBitmap()));
+        } else {
             DelegateImageDownloaded downloadFinished = new DelegateImageDownloaded() {
                 @Override
                 public void imageDownloaded(Bitmap result, Object tag) {
@@ -261,7 +267,7 @@ public class DetailActivity extends AppCompatActivity {
                         System.out.println("imageDownloaded, result: " + result.toString());
 
                         Drawable myDrawable = new BitmapDrawable(result);
-                        detailImage.setImageDrawable(myDrawable);
+                        //detailImage.setImageDrawable(myDrawable);
                     } else {
                         System.out.println("DelegateImageDownloaded downloadFinished but result was null :(");
                     }
@@ -309,53 +315,6 @@ public class DetailActivity extends AppCompatActivity {
                 startActivity(myIntent);
             }
         });
-
-
-
-
-
-
-
-
-        final ImageButton btnBacktomap = (ImageButton) findViewById(R.id.btnBacktomap);
-        btnBacktomap.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                System.out.println("btnBacktomap button clicked");
-                Intent myIntent = new Intent( DetailActivity.this, MapActivity.class );
-                System.out.println("opening detail activity with key: " + host.getId());
-                DetailActivity.this.startActivity(myIntent);
-            }
-        });
-
-
-
-
-
-
-
-        final VideoView vvHost = (VideoView) findViewById(R.id.vvHost);
-        vvHost.setVisibility(View.GONE);
-        if (host.getVideoURL() != null) {
-            System.out.println("trying to play video: " + host.getVideoURL());
-
-            Uri uri = Uri.parse(host.getVideoURL());
-            if (uri != null) {
-                vvHost.setVisibility(View.VISIBLE);
-                System.out.println("setting up video: " + host.getVideoURL());
-                vvHost.setMediaController(new MediaController(this));
-                vvHost.setVideoURI(uri);
-                vvHost.requestFocus();
-                vvHost.start();
-
-                System.out.println("videoview element set to visible, video started w/ url: " + host.getVideoURL());
-
-            }
-        }
-
-
-
-
-
     }
 
     Double price = null;
@@ -404,4 +363,42 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            ScreenSlidePageFragment f = new ScreenSlidePageFragment();
+
+            Object[] o = host.getImages().values().toArray();
+
+            if (host.getVideoURL() == null) {
+                Bitmap b = (Bitmap) o[position];
+                f.setBitmap( b );
+            } else {
+                if (position == 0)
+                    f.setVideoURL( host.getVideoURL() );
+                else {
+                    Bitmap b = (Bitmap) o[position - 1];
+                    f.setBitmap( b );
+                }
+            }
+            return f;
+        }
+
+        @Override
+        public int getCount() {
+            return host.getImages().size() + (host.getVideoURL() == null ? 0 : 1);
+        }
+
+        // http://stackoverflow.com/questions/7263291/viewpager-pageradapter-not-updating-the-view
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+    }
+
 }
