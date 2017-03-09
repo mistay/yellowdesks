@@ -45,55 +45,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity {
 
 
 
-        System.out.println ("Starting Yellow Desks ...");
 
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            Data.version = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println (String.format("Yellow Desks v%s", Data.version));
-
-        String prefLogintarget = Data.getInstance().prefLoadString( LoggedInUser.PREFLOGINTARGET );
-        String prefUsername = Data.getInstance().prefLoadString( LoggedInUser.PREFUSERNAME );
-        String prefPassword = Data.getInstance().prefLoadString( LoggedInUser.PREFPASSWORD );
-
-        System.out.println(String.format("preflogintarget %s prefusername %s prefpass %s",  prefLogintarget, prefUsername, prefPassword));
-
-        final TaskDelegate taskDelegate = new TaskDelegate() {
-            @Override
-            public void taskCompletionResult(String result) {
-                // data is ready
-                System.out.println( "data ready" );
-                LoginDetails loginDetails = Data.getInstance().loginDetails;
-
-                if (loginDetails != null) {
-                    System.out.println( "login successful, redirecting to map" );
-
-                    Intent myIntent = new Intent( LoginOrRegisterActivity.this, MapActivity.class );
-                    LoginOrRegisterActivity.this.startActivity( myIntent );
-                } else  {
-                    System.out.println( "login failed: " + result );
-                }
-
-            }
-        };
-
-        if (prefLogintarget.equals( LoginDetails.Logintargets.YD.toString() )) {
-            System.out.println("try to login at yd api");
-            Data.getInstance().login(prefUsername, prefPassword, taskDelegate);
-        }
-
-        if (prefLogintarget.equals( LoginDetails.Logintargets.FACEBOOK.toString() )) {
-            System.out.println("try to login at facebook");
-
-            Data.getInstance().loginfb(prefPassword, taskDelegate);
-        }
-
-        System.out.println("done w/ login");
 
         // facebook login button//
         try {
