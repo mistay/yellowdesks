@@ -99,9 +99,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (loginDetails != null) {
                     txtLoginError.setText("login successful");
                     txtLoginError.setTextColor( Color.GREEN );
-                    System.out.println( "login successful, redirecting to map" );
-                    Intent myIntent = new Intent( LoginActivity.this, MapActivity.class );
-                    LoginActivity.this.startActivity( myIntent );
+                    System.out.println( "login successful, redirecting to detail activity" );
+                    //Intent myIntent = new Intent( LoginActivity.this, DetailActivity.class );
+                    //LoginActivity.this.startActivity( myIntent );
+                    finish();
                 } else  {
                     String error = "login failed: " + result;
                     System.out.println( error );
@@ -134,6 +135,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 System.out.println("fb login: result " + loginResult.toString());
+
+
                 final AccessToken accessToken = loginResult.getAccessToken();
                 System.out.println("fb accessToken: " + accessToken.toString());
 
@@ -178,9 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Data.getInstance().prefSave( LoggedInUser.PREFPASSWORD, accessToken.getToken() );
                                     Data.getInstance().prefSave( LoggedInUser.PREFLOGINTARGET, LoginDetails.Logintargets.FACEBOOK.toString() );
 
-
                                     Data.getInstance().loginDetails = loginDetails;
-
 
                                     Data.getInstance().loginfb( accessToken.getToken(), taskDelegate );
 
@@ -188,7 +189,6 @@ public class LoginActivity extends AppCompatActivity {
                                     System.out.println("exc: " + e.toString());
                                 }
                                 System.out.println("done with app code");
-
                             }
                         });
                 Bundle parameters = new Bundle();
@@ -211,6 +211,18 @@ public class LoginActivity extends AppCompatActivity {
         // try to fetch e-mail field from user profile (facebook)
         btnF.setReadPermissions("email");
 
+
+        Button btnRegister = (Button) findViewById( R.id.btnLoginRegister );
+        btnRegister.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("on btnRegister()");
+
+                Intent myIntent = new Intent( LoginActivity.this, RegisterActivity.class );
+                LoginActivity.this.startActivity( myIntent );
+            }
+        });
+
         System.out.println("attached login");
     }
     @Override
@@ -218,6 +230,4 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
-
 }
