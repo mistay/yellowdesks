@@ -78,11 +78,14 @@
             />
 
 
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
 
         <TextView
-            android:text="Make a reservation"
+            android:text="Check Availability And Prices"
             android:layout_width="match_parent"
-            android:textSize="40dp"
+            android:textSize="30dp"
             android:layout_height="wrap_content"
             />
 
@@ -167,34 +170,25 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvPricecalc" />
 
+        <Button
+            android:text="Next"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/btnNextStep"
+            android:layout_weight="1"
+            android:background="@color/yellwdesksBlack"
+            android:textColor="@color/yellwdesksYellow"
+            android:padding="6dp"
+            />
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-    <!--
-            <Button
-                android:text="send a request"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnSendRequest"
-                android:layout_weight="1" />
-    -->
-            <Button
-                android:text="Next"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:id="@+id/btnNextStep"
-                android:layout_weight="1"
-                android:background="@color/yellwdesksBlack"
-                android:textColor="@color/yellwdesksYellow"
-                />
-
-
-
-        </LinearLayout>
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="12dp"/>
+            android:text=""
+            android:id="@+id/tvLoggedinas"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:linksClickable="true"
+            />
     </LinearLayout>
 </ScrollView>
