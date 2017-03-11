@@ -31,6 +31,14 @@ public class Data {
     private Data() {
     }
 
+    public void prefDelete(String key) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove( key );
+        editor.apply();
+    }
+
     public void prefSave(String key, String value) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -82,6 +90,14 @@ public class Data {
         downloadWebTask.execute( String.format("https://yellowdesks.com/bookings/bookingrequest/?username=%s&password=%s&host_id=%d&date=%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password, host.getId(), "20170101"));
     }
 
+    public void logout() {
+        prefDelete( LoggedInUser.PREFLOGINTARGET);
+        prefDelete( LoggedInUser.PREFUSERNAME);
+        prefDelete( LoggedInUser.PREFPASSWORD);
+
+        loginDetails = null;
+        System.out.println("successfully logged out user.");
+    }
     public void loginfb(final String accesstoken, final TaskDelegate downloadFinished) {
         DownloadWebTask downloadWebTask = new DownloadWebTask();
         downloadWebTask.delegate = new TaskDelegate() {
@@ -245,8 +261,20 @@ public class Data {
                                     list,
                                     details,
                                     extras,
-                                    value.getString("open_from").equals("null") ? null : value.getString("open_from"),
-                                    value.getString("open_till") == "null" ? null : value.getString("open_till"),
+                                    value.getString("open_monday_from").equals("null") ? null : value.getString("open_monday_from"),
+                                    value.getString("open_monday_till") == "null" ? null : value.getString("open_monday_till"),
+                                    value.getString("open_tuesday_from").equals("null") ? null : value.getString("open_tuesday_from"),
+                                    value.getString("open_tuesday_till") == "null" ? null : value.getString("open_tuesday_till"),
+                                    value.getString("open_wednesday_from").equals("null") ? null : value.getString("open_wednesday_from"),
+                                    value.getString("open_wednesday_till") == "null" ? null : value.getString("open_wednesday_till"),
+                                    value.getString("open_thursday_from").equals("null") ? null : value.getString("open_thursday_from"),
+                                    value.getString("open_thursday_till") == "null" ? null : value.getString("open_thursday_till"),
+                                    value.getString("open_friday_from").equals("null") ? null : value.getString("open_friday_from"),
+                                    value.getString("open_friday_till") == "null" ? null : value.getString("open_friday_till"),
+                                    value.getString("open_saturday_from").equals("null") ? null : value.getString("open_saturday_from"),
+                                    value.getString("open_saturday_till") == "null" ? null : value.getString("open_saturday_till"),
+                                    value.getString("open_sunday_from").equals("null") ? null : value.getString("open_sunday_from"),
+                                    value.getString("open_sunday_till") == "null" ? null : value.getString("open_sunday_till"),
                                     value.getString("open_247fixworkers") == "null" ? null : value.getBoolean("open_247fixworkers"),
                                     price_1day,
                                     price_10days,
