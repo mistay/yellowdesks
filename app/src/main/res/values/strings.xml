@@ -31,4 +31,10 @@
     <string name="prefLogintarget"></string>
     <string name="prefUsername"></string>
     <string name="prefPassword"></string>
+
+    <string name="nextStepLogin">Next (Login)</string>
+    <string name="nextStepOverview">Next (Overview)</string>
+
+    <string name="loggedinas">Logged in as %1$s (via %2$s). <a href="http://google.at">logout</a>.</string>
+    <string name="notloggedin">Not logged in.</string>
 </resources>
