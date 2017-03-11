@@ -88,7 +88,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
         System.out.println("android device serial: " + Build.SERIAL);
-        if ( Build.SERIAL.equals("043059138291dd6f")) {
+
+        if (Developerdevices.isDeveloperDevice()) {
             Button testArmin = new Button( getApplicationContext() );
             testArmin.setText("test (dev phone)");
             LinearLayout ll = (LinearLayout) btnLetsstart.getParent();
@@ -101,9 +102,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     WelcomeActivity.this.startActivity( myIntent );
                 }
             } );
-
         }
-
 
         image1 = (ImageView)findViewById(R.id.imageView);
         imageArray = new int[8];

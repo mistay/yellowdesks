@@ -167,6 +167,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                 List<Host> hosts = Data.getInstance().getData();
                 for (Host host : hosts) {
+
+                    if (host.getHost().equals("test") && ! Developerdevices.isDeveloperDevice()) {
+                        // nur den developer geräten den test-user anzeigen
+                        continue;
+                    }
+
                     LatLng latlng = new LatLng( host.getLat(), host.getLng() );
                     System.out.println(String.format("new Marker %s for host %s", latlng.toString(), host.getHost()));
                     Marker myMarker = mMap.addMarker( new MarkerOptions().position( latlng ).title( host.getHost() ) );
