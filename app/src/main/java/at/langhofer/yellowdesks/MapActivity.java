@@ -51,7 +51,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     Marker youMarker;
 
-    LatLng currentlocation = new LatLng( 47.806021, 13.050602000000026 ); //salzburg
+    LatLng currentlocation = new LatLng( 47.806021, 13.050602000000026 ); //salzburg, austria
 
     int circleRadius = 1000;
 
@@ -80,6 +80,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void onConnectionSuspended(int i) {
 
     }
+
+    Boolean centeragain=true;
+
     @Override
     public void onConnected(Bundle connectionHint) {
 
@@ -110,7 +113,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             System.out.println("trying getting location" );
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
-                System.out.println("lng" + mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
+                System.out.println("lat: " + mLastLocation.getLatitude() + " lng: " + mLastLocation.getLongitude());
 
                 currentlocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
@@ -119,11 +122,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 youMarker.remove();
                 youMarker = mMap.addMarker(new MarkerOptions().position(currentlocation).title("You are here!"));
                 youMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.you));
-                youMarker.setZIndex( 0.1f );
+                youMarker.setZIndex( 0.00001f );
 
 
+                if (centeragain)
+                    centerAndZoomCamera();
 
-                centerAndZoomCamera();
+                centeragain=false;
             } else {
             }
             System.out.println("done reading location. mLastLocation null?");
