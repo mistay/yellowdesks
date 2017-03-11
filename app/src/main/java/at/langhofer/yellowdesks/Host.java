@@ -42,11 +42,21 @@ public class Host {
     // e.g. "Creativespace im Herzen Salzburgs"
     private String title = "";
 
-    private String open_from = null;
-    private String open_till = null;
-
+    private String open_monday_from = null;
+    private String open_monday_till = null;
+    private String open_tuesday_from = null;
+    private String open_tuesday_till = null;
+    private String open_wednesday_from = null;
+    private String open_wednesday_till = null;
+    private String open_thursday_from = null;
+    private String open_thursday_till = null;
+    private String open_friday_from = null;
+    private String open_friday_till = null;
+    private String open_saturday_from = null;
+    private String open_saturday_till = null;
+    private String open_sunday_from = null;
+    private String open_sunday_till = null;
     private Boolean open247fixworkers = null;
-
 
     public Marker marker;
 
@@ -54,7 +64,18 @@ public class Host {
         // do not allow new Item()
     }
 
-    public Host(Long id, String host, int totalDesks, int availableDesks, double lat, double lng, String imageURL, LinkedList<String> imageURLs, String details, String extras, String open_from, String open_till, Boolean open247fixworkers, Float price_1day, Float price_10days, Float price_1month, Float price_6months, String title, String videoURL) {
+    public Host(Long id, String host, int totalDesks, int availableDesks,
+                double lat, double lng, String imageURL,
+                LinkedList<String> imageURLs, String details, String extras,
+                String open_monday_from, String open_monday_till,
+                String open_tuesday_from, String open_tuesday_till,
+                String open_wednesday_from, String open_wednesday_till,
+                String open_thursday_from, String open_thursday_till,
+                String open_friday_from, String open_friday_till,
+                String open_saturday_from, String open_saturday_till,
+                String open_sunday_from, String open_sunday_till,
+                Boolean open247fixworkers, Float price_1day, Float price_10days, Float price_1month,
+                Float price_6months, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
         this.id = id;
@@ -70,8 +91,20 @@ public class Host {
 
         this.details = details;
         this.extras = extras;
-        this.open_from = open_from;
-        this.open_till = open_till;
+        this.open_monday_from = open_monday_from;
+        this.open_monday_till = open_monday_till;
+        this.open_tuesday_from = open_tuesday_from;
+        this.open_tuesday_till = open_tuesday_till;
+        this.open_wednesday_from = open_wednesday_from;
+        this.open_wednesday_till = open_wednesday_till;
+        this.open_thursday_from = open_thursday_from;
+        this.open_thursday_till = open_thursday_till;
+        this.open_friday_from = open_friday_from;
+        this.open_friday_till = open_friday_till;
+        this.open_saturday_from = open_saturday_from;
+        this.open_saturday_till = open_saturday_till;
+        this.open_sunday_from = open_sunday_from;
+        this.open_sunday_till = open_sunday_till;
         this.open247fixworkers = open247fixworkers;
         this.price_1day = price_1day;
         this.price_10days = price_10days;
@@ -108,8 +141,8 @@ public class Host {
 
     public String getTitle() { return title; }
 
-    public String getOpenFrom() { return open_from; }
-    public String getOpenTill() { return open_till; }
+    public String getOpenFrom() { return open_monday_from; }
+    public String getOpenTill() { return open_monday_till; }
     public Boolean getOpen247fixworkers ( ) { return open247fixworkers; }
 
     public void setBitmap(Bitmap bitmap) { this.bitmap = bitmap; }
@@ -134,19 +167,16 @@ public class Host {
         return details;
     }
 
-    public Boolean isOpenNow() {
-        if (open247fixworkers)
-            return true;
-
-        if (open_from == null || open_till == null)
+    private Boolean between(String from, String until) {
+        if (from == null || until == null)
             return false;
 
         try {
-            Date time1 = new SimpleDateFormat("HH:mm:ss").parse(open_from);
+            Date time1 = new SimpleDateFormat("HH:mm:ss").parse(from);
             Calendar calendar1 = Calendar.getInstance();
             calendar1.setTime(time1);
 
-            Date time2 = new SimpleDateFormat("HH:mm:ss").parse(open_till);
+            Date time2 = new SimpleDateFormat("HH:mm:ss").parse(until);
             Calendar calendar2 = Calendar.getInstance();
             calendar2.setTime(time2);
             calendar2.add(Calendar.DATE, 1);
@@ -162,6 +192,35 @@ public class Host {
             }
         } catch (Exception e) {
             System.out.println("exception determing open:" + e.toString());
+        }
+
+        return false;
+    }
+
+    public Boolean isOpenNow() {
+        if (open247fixworkers)
+            return true;
+
+
+        Calendar c = Calendar.getInstance();
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK); // 0 = sun, 1=mon, ...
+
+        switch (dayOfWeek) {
+            case 0:
+                //sunday
+                return between(open_sunday_from, open_sunday_till);
+            case 1:
+                return between(open_monday_from, open_monday_till);
+            case 2:
+                return between(open_tuesday_from, open_tuesday_till);
+            case 3:
+                return between(open_wednesday_from, open_wednesday_till);
+            case 4:
+                return between(open_thursday_from, open_thursday_till);
+            case 5:
+                return between(open_friday_from, open_friday_till);
+            case 6:
+                return between(open_saturday_from, open_saturday_till);
         }
 
         return false;
