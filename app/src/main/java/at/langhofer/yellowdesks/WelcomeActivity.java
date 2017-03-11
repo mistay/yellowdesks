@@ -3,12 +3,14 @@ package at.langhofer.yellowdesks;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class WelcomeActivity extends AppCompatActivity {
     private ImageView image1;
@@ -83,6 +85,25 @@ public class WelcomeActivity extends AppCompatActivity {
                 WelcomeActivity.this.startActivity(myIntent);
             }
         });
+
+
+        System.out.println("android device serial: " + Build.SERIAL);
+        if ( Build.SERIAL.equals("043059138291dd6f")) {
+            Button testArmin = new Button( getApplicationContext() );
+            testArmin.setText("test (dev phone)");
+            LinearLayout ll = (LinearLayout) btnLetsstart.getParent();
+            ll.addView( testArmin );
+            testArmin.setOnClickListener( new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    System.out.println( "testbutton button pressed. model: " + android.os.Build.MODEL );
+                    Intent myIntent = new Intent( WelcomeActivity.this, RegisterActivity.class );
+                    WelcomeActivity.this.startActivity( myIntent );
+                }
+            } );
+
+        }
+
 
         image1 = (ImageView)findViewById(R.id.imageView);
         imageArray = new int[8];
