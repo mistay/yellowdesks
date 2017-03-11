@@ -3,9 +3,11 @@ package at.langhofer.yellowdesks;
 import android.os.AsyncTask;
 import android.util.Base64;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
@@ -22,6 +24,9 @@ import static android.R.attr.port;
 public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
     public TaskDelegate delegate;
+
+    public String post_data = null;
+
 
     @Override
     protected String doInBackground(String... urls) {
@@ -106,7 +111,11 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
                         conn.setReadTimeout( 10000 );
                         conn.setConnectTimeout( 15000 );
-                        conn.setRequestMethod( "GET" );
+                        conn.setRequestMethod( post_data == null ? "GET" : "POST" );
+
+                        conn.setDoInput( true );
+                        if (post_data != null)
+                            conn.setDoOutput( true );
 
                         if (Data.getInstance().loginDetails != null)
                             conn.setRequestProperty( "LOGINTARGET", Data.getInstance().loginDetails.loginTarget.toString());
@@ -114,6 +123,10 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                         // todo: sauberes konzept überlegen wie man fb + logintarget machen könnte
                         if ((url.getUserInfo() != null && url.getUserInfo().startsWith( "dummy" )))
                             conn.setRequestProperty( "LOGINTARGET", LoginDetails.Logintargets.FACEBOOK.toString());
+
+
+                        // just for info. could be interesting?
+                        conn.setRequestProperty("androidmodel", android.os.Build.MODEL);
 
                         //conn.setRequestProperty( "Host", "yellowdesks.com" );
                         //System.out.println( "Host: " + "yellowdesks.com" );
@@ -137,7 +150,8 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                             System.out.println( "Authorization: " + authorization );
                         }
 
-                        conn.setDoInput( true );
+
+
 
                         for (String header : conn.getRequestProperties().keySet()) {
                             if (header != null) {
@@ -149,6 +163,7 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
 
                         System.out.println("conn: " + conn.toString());
 
+
                         try {
                             conn.connect();
                         } catch (Exception e) {
@@ -157,12 +172,31 @@ public class DownloadWebTask extends AsyncTask<String, Void, String> {
                             continue;
                         }
 
+                        try {
+                            if (post_data != null) {
+
+                                BufferedWriter dataOutputStream = new BufferedWriter(
+                                        new OutputStreamWriter(conn.getOutputStream(), "UTF-8"));
+
+                                dataOutputStream.write( post_data );
+                                dataOutputStream.flush();
+                                dataOutputStream.close();
+                                System.out.println( String.format("sent post_data: %s", post_data) );
+                            }
+                        } catch (Exception e) {
+                            System.out.println( "Exception while post_data: " + e.toString() );
+                        }
+
+
                         int response = conn.getResponseCode();
                         is = conn.getInputStream();
 
                         // Convert the InputStream into a string
                         String contentAsString = readIt( is );
                         //System.out.println("contentasstring: " + contentAsString);
+
+
+
                         return contentAsString;
                     }
                 } while (endlessly);
