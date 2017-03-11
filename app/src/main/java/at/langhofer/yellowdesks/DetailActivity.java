@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -24,8 +25,11 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Space;
 import android.widget.TextView;
+
 import com.paypal.android.sdk.payments.PayPalService;
+
 import org.json.JSONObject;
+
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -41,6 +45,28 @@ public class DetailActivity extends AppCompatActivity {
         // Stop service when done
         stopService(new Intent(this, PayPalService.class));
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        System.out.println("onresume");
+        updateLogindependingfields();
+    }
+
+    private void updateLogindependingfields() {
+        final Button btnNextStep = (Button) findViewById( R.id.btnNextStep);
+        LoginDetails loginDetails = Data.getInstance().loginDetails;
+
+        btnNextStep.setText( loginDetails == null ? getResources().getText(R.string.nextStepLogin) : getResources().getText(R.string.nextStepOverview));
+
+        TextView tvLoggedinas = (TextView) findViewById( R.id.tvLoggedinas );
+
+        String prefLogintarget = Data.getInstance().prefLoadString( LoggedInUser.PREFLOGINTARGET );
+        String prefUsername = Data.getInstance().prefLoadString( LoggedInUser.PREFUSERNAME );
+        tvLoggedinas.setText( loginDetails == null ? getResources().getString(R.string.notloggedin) : getResources().getString(R.string.loggedinas, prefUsername, prefLogintarget));
+        tvLoggedinas.setMovementMethod( LinkMovementMethod.getInstance());
     }
 
     @Override
@@ -191,15 +217,9 @@ public class DetailActivity extends AppCompatActivity {
                     downloadWebimageTask.setTag( entry );
                     downloadWebimageTask.execute(entry.getKey());
                 } else {
-
                     //ivImage.setAnimation(null);
                     //System.out.println("setting image from already downloaded cache");
                     //ivImage.setImageBitmap( bitmap );
-
-
-
-
-
                 }
             }
         } else {
@@ -304,15 +324,34 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        final Button btnNextStep = (Button) findViewById(R.id.btnNextStep);
+
+        updateLogindependingfields();
+
+        TextView tvLoggedinas = (TextView) findViewById( R.id.tvLoggedinas );
+        tvLoggedinas.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Data.getInstance().logout();
+                updateLogindependingfields();
+            }
+        } );
+
+        final Button btnNextStep = (Button) findViewById( R.id.btnNextStep);
         btnNextStep.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 System.out.println("btnNextStep button clicked");
-                Intent myIntent = new Intent( DetailActivity.this, BookingreviewActivity.class );
-                myIntent.putExtra("hostId", host.getId());
-                myIntent.putExtra("from", dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth());
-                myIntent.putExtra("to", dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth());
-                startActivity(myIntent);
+
+                LoginDetails loginDetails = Data.getInstance().loginDetails;
+                if (loginDetails == null) {
+                    Intent myIntent = new Intent( DetailActivity.this, LoginActivity.class );
+                    startActivity(myIntent);
+                } else {
+                    Intent myIntent = new Intent( DetailActivity.this, BookingreviewActivity.class );
+                    myIntent.putExtra("hostId", host.getId());
+                    myIntent.putExtra("from", dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth());
+                    myIntent.putExtra("to", dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth());
+                    startActivity(myIntent);
+                }
             }
         });
     }
