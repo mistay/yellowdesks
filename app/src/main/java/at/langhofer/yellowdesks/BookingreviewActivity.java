@@ -34,10 +34,15 @@ public class BookingreviewActivity extends AppCompatActivity {
      * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
      * without communicating to PayPal's servers.
      */
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_PRODUCTION;
 
     // note that these credentials will differ between live & sandbox environments.
-    private static final String CONFIG_CLIENT_ID = "AWAYB0oayBfWbFgfqgRYGIpMUXfw_5YvgR6ObNbNfxOXvxnC0YwoZW0wvF9bIuPZwX8lrec0vTuTuJ-f";
+
+    // sandbox hello-facilitator@yellowdesks.com:                                   AWAYB0oayBfWbFgfqgRYGIpMUXfw_5YvgR6ObNbNfxOXvxnC0YwoZW0wvF9bIuPZwX8lrec0vTuTuJ-f
+    // production hello@yellowdesks.com (tested successfully mar 17):               ASYWIHLM6Qloye_viETFTHaC7kcAcgY_P2CaRkttpzDxJxNqRxRB_Dm6fNfW3po3pn4Cdi7gGF6yPkV4
+
+    // https://developer.paypal.com/developer/applications/edit/QVNZV0lITE02UWxveWVfdmlFVEZUSGFDN2tjQWNnWV9QMkNhUmt0dHB6RHhKeE5xUnhSQl9EbTZmTmZXM3BvM3BuNENkaTdnR0Y2eVBrVjQ=
+    private static final String CONFIG_CLIENT_ID = "ASYWIHLM6Qloye_viETFTHaC7kcAcgY_P2CaRkttpzDxJxNqRxRB_Dm6fNfW3po3pn4Cdi7gGF6yPkV4";
 
     private static final int REQUEST_CODE_PAYMENT = 1;
     private static final int REQUEST_CODE_FUTURE_PAYMENT = 2;
@@ -192,6 +197,8 @@ public class BookingreviewActivity extends AppCompatActivity {
                 else {
                     PayPalPayment thingToBuy = new PayPalPayment( new BigDecimal( total ), "EUR", String.format( "Yellow Desk %s - %s at host: %s", begin, end, host.getHost() ),
                             PayPalPayment.PAYMENT_INTENT_SALE );
+
+                    thingToBuy.custom( "[\"12\",\"13\"]" );
                     /*
                      * See getStuffToBuy(..) for examples of some available payment options.
                      */
