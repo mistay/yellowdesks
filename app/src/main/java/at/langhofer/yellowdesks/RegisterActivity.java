@@ -110,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 String data = jObj.toString();
 
-                String url = "https://yellowdesks.com/coworkers/register";
+                String url = "https://api.yellowdesks.com/coworkers/register";
                 downloadWebTask.post_data = "data=" + data;
                 downloadWebTask.execute( url );
             }
