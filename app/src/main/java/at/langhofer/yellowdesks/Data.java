@@ -276,6 +276,7 @@ public class Data {
                                     value.getString("open_sunday_from").equals("null") ? null : value.getString("open_sunday_from"),
                                     value.getString("open_sunday_till") == "null" ? null : value.getString("open_sunday_till"),
                                     value.getString("open_247fixworkers") == "null" ? false : value.getBoolean("open_247fixworkers"),
+                                    value.getString("cancellationscheme") == "soft" ? Host.CANCELLATIONSCHEMES.soft : Host.CANCELLATIONSCHEMES.hard,
                                     price_1day,
                                     price_10days,
                                     price_1month,
