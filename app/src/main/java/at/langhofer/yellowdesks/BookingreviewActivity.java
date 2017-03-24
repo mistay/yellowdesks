@@ -25,6 +25,11 @@ public class BookingreviewActivity extends AppCompatActivity {
 
     Host host = null;
 
+    String from = "";
+    String to = "";
+    String total = "";
+    String booking_id = "";
+
     /**
      * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
      * <p>
@@ -54,8 +59,8 @@ public class BookingreviewActivity extends AppCompatActivity {
             .clientId( CONFIG_CLIENT_ID )
             // The following are only used in PayPalFuturePaymentActivity.
             .merchantName( "Yellowdesks" )
-            .merchantPrivacyPolicyUri( Uri.parse( "https://www.yellowdesks.com/privacy" ) )
-            .merchantUserAgreementUri( Uri.parse( "https://www.yellowdesks.com/legal" ) );
+            .merchantPrivacyPolicyUri( Uri.parse( "http://www.yellowdesks.com/termsandconditions" ) )
+            .merchantUserAgreementUri( Uri.parse( "http://www.yellowdesks.com/termsandconditions" ) );
 
 
     @Override
@@ -85,14 +90,13 @@ public class BookingreviewActivity extends AppCompatActivity {
             }
         }
     }
-    String total;
+
     public void setTotal(String total) {
         this.total = total;
         Button btnPayNow = (Button) findViewById( R.id.btnPayNow ) ;
         btnPayNow.setText( String.format("Pay Now %s", total ));
         btnPayNow.setEnabled( true );
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +106,15 @@ public class BookingreviewActivity extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
         long hostId = -1;
-        String from = "";
-        String to = "";
+
         if (b != null) {
             hostId = b.getLong( "hostId" );
-            from = b.getString( "from"  );
-            to = b.getString( "to"  );
+            from = b.getString( "from" );
+            to = b.getString( "to" );
         }
         host = Data.getInstance().getHost(hostId);
 
         System.out.println(String.format("BookingreviewActivity. on create, hostId: %s from: %s to: %s", hostId, from, to));
-
-
 
         final TextView tvHostDetails = (TextView) findViewById( R.id.tvHostDetails);
         final TextView tvHostTitle = (TextView) findViewById( R.id.tvHostTitle);
@@ -121,7 +122,6 @@ public class BookingreviewActivity extends AppCompatActivity {
         tvHostDetails.setText(String.format(host.getHost()));
         tvHostTitle.setText(String.format(host.getTitle()));
         ivHost.setImageBitmap( host.getBitmap() );
-
 
         final TextView tvBookingresponse = (TextView) findViewById( R.id.tvBookingresponse);
         DownloadWebTask downloadWebTask = new DownloadWebTask();
@@ -139,22 +139,20 @@ public class BookingreviewActivity extends AppCompatActivity {
                         StringBuffer sb = new StringBuffer();
 
                         while( keys.hasNext() ) {
-                            String booking_id = (String)keys.next();
-                            System.out.println(String.format("booking_id %s", booking_id));
+                            String key = (String)keys.next();
+                            System.out.println(String.format("key %s", key));
 
-                            if (booking_id.equals("total")) {
-                                String total = jsonObject.getString(booking_id);
-
+                            if (key.equals("total")) {
+                                String total = jsonObject.getString(key);
                                 System.out.println("total amount: " + total);
-
                                 setTotal( total );
-
                             }
-                            if ( jsonObject.get(booking_id) instanceof JSONObject ) {
+                            if ( jsonObject.get(key) instanceof JSONObject ) {
 
+                                booking_id = key;
+                                System.out.println("booking_id: " + booking_id);
 
-                                JSONObject o = jsonObject.getJSONObject(booking_id);
-
+                                JSONObject o = jsonObject.getJSONObject(key);
                                 String txt = String.format("%s\nBegin: %s End: %s\nPrice: %s excl. VAT: %s\n", o.getString("description"), o.getString("begin"), o.getString("end"), o.getString("price"), o.getString("vat"));
                                 sb.append(txt + "\n");
                             }
@@ -167,7 +165,7 @@ public class BookingreviewActivity extends AppCompatActivity {
                 }
             }
         };
-        downloadWebTask.execute(String.format("https://yellowdesks.com/bookings/prepare/%s/%s/%s", hostId, from, to));
+        downloadWebTask.execute(String.format("https://api.yellowdesks.com/bookings/prepare/%s/%s/%s/true", hostId, from, to));
 
         Intent intent = new Intent( this, PayPalService.class );
         intent.putExtra( PayPalService.EXTRA_PAYPAL_CONFIGURATION, config );
@@ -188,28 +186,22 @@ public class BookingreviewActivity extends AppCompatActivity {
                  * Also, to include additional payment details and an item list, see getStuffToBuy() below.
                  */
 
-                Double price = 3.05;
-                String begin = "";
-                String end = "";
+                PayPalPayment thingToBuy = new PayPalPayment( new BigDecimal( total ), "EUR", String.format( "Yellow Desk %s - %s Host: %s", from, to, host.getHost()),
+                        PayPalPayment.PAYMENT_INTENT_SALE );
 
-                if (price == null)
-                    System.out.println( "price null, no payment sinnvoll" );
-                else {
-                    PayPalPayment thingToBuy = new PayPalPayment( new BigDecimal( total ), "EUR", String.format( "Yellow Desk %s - %s at host: %s", begin, end, host.getHost() ),
-                            PayPalPayment.PAYMENT_INTENT_SALE );
+                thingToBuy.custom( "[" + booking_id + "]" );
+                /*
+                 * See getStuffToBuy(..) for examples of some available payment options.
+                 */
 
-                    thingToBuy.custom( "[\"12\",\"13\"]" );
-                    /*
-                     * See getStuffToBuy(..) for examples of some available payment options.
-                     */
+                System.out.println(String.format("starting paypal payment. total: %s booking_id: %s ", total, booking_id));
 
-                    Intent intent = new Intent( BookingreviewActivity.this, PaymentActivity.class );
+                Intent intent = new Intent( BookingreviewActivity.this, PaymentActivity.class );
 
-                    // send the same configuration for restart resiliency
-                    intent.putExtra( PayPalService.EXTRA_PAYPAL_CONFIGURATION, config );
-                    intent.putExtra( PaymentActivity.EXTRA_PAYMENT, thingToBuy );
-                    startActivityForResult( intent, REQUEST_CODE_PAYMENT );
-                }
+                // send the same configuration for restart resiliency
+                intent.putExtra( PayPalService.EXTRA_PAYPAL_CONFIGURATION, config );
+                intent.putExtra( PaymentActivity.EXTRA_PAYMENT, thingToBuy );
+                startActivityForResult( intent, REQUEST_CODE_PAYMENT );
             }
         } );
     }
