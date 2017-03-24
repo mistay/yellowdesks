@@ -57,6 +57,11 @@ public class Host {
     private String open_sunday_from = null;
     private String open_sunday_till = null;
     private Boolean open247fixworkers = null;
+    private CANCELLATIONSCHEMES cancellationscheme = null;
+
+    public enum CANCELLATIONSCHEMES {
+        hard, soft,
+    }
 
     public Marker marker;
 
@@ -74,7 +79,9 @@ public class Host {
                 String open_friday_from, String open_friday_till,
                 String open_saturday_from, String open_saturday_till,
                 String open_sunday_from, String open_sunday_till,
-                Boolean open247fixworkers, Float price_1day, Float price_10days, Float price_1month,
+                Boolean open247fixworkers,
+                CANCELLATIONSCHEMES cancellationscheme,
+                Float price_1day, Float price_10days, Float price_1month,
                 Float price_6months, String title, String videoURL) {
         this.totalDesks = totalDesks;
         this.availableDesks = availableDesks;
@@ -110,7 +117,7 @@ public class Host {
         this.price_10days = price_10days;
         this.price_1month = price_1month;
         this.price_6months = price_6months;
-
+        this.cancellationscheme = cancellationscheme;
         this.title = title;
         this.videoURL = videoURL;
     }
@@ -162,6 +169,8 @@ public class Host {
     public Float getPrice10Days(){ return price_10days; }
     public Float getPrice1Month(){ return price_1month; }
     public Float getPrice6Months(){ return price_6months; }
+
+    public CANCELLATIONSCHEMES getCancellationscheme() { return this.cancellationscheme; }
 
     public String getHostDetails() {
         return details;
