@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks;
+package com.yellowdesks.yellowdesks;
 
 /**
  * Created by arminlanghofer on 12.02.17.

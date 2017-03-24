@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks;
+package com.yellowdesks.yellowdesks;
 
 import android.os.Build;
 

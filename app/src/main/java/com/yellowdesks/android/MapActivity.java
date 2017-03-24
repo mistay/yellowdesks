@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks;
+package com.yellowdesks.yellowdesks;
 
 import android.Manifest;
 import android.content.Intent;
@@ -41,7 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 
 import static android.R.attr.value;
-import static at.langhofer.yellowdesks.R.id.map;
+import static com.yellowdesks.yellowdesks.R.id.map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 

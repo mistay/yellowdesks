@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks;
+package com.yellowdesks.yellowdesks;
 
 public class LoggedInUser {
     public final static String PREFLOGINTARGET = "PREFLOGINTARGET";

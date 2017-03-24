@@ -1,4 +1,4 @@
-package at.langhofer.yellowdesks3;
+package at.yellowdesks.yellowdesks3;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
