@@ -354,6 +354,8 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        changedate();
     }
 
     Double price = null;
@@ -373,14 +375,26 @@ public class DetailActivity extends AppCompatActivity {
                 if (raw != null && raw != "") {
                     try {
                         JSONObject value = new JSONObject(raw);
-                        Integer days = value.getInt( "count" );
-                        begin = value.getString("begin");
-                        end = value.getString("end");
+                        Integer num_workingdays = value.has( "num_workingdays" ) ? value.getInt( "num_workingdays" ) : null;
+                        Integer num_months = value.has( "num_months" ) ? value.getInt( "num_months" ) : null;
+                        Integer num_days = value.has( "num_days" ) ? value.getInt( "num_days" ) : null;
                         price = value.getDouble( "price" );
+
+                        StringBuilder text = new StringBuilder( );
+                        if (value.has( "num_workingdays" )) {
+                            // tagesabrechnung
+                            text.append( String.format("%s Workingdays\n", value.getInt( "num_workingdays" )));
+                        } else {
+                            // monatsabrechnung
+                            if (value.has( "num_months" ))
+                                text.append( String.format("%s Months ", value.getInt( "num_months" )));
+                            if (value.has( "num_days" ))
+                                text.append( String.format("%s Days\n", value.getInt( "num_days" )));
+                        }
                         if (price != null)
-                            tvPricecalc.setText(String.format("Days: %s. Price: %s", days, NumberFormat.getCurrencyInstance().format(price)));
-                        else
-                            tvPricecalc.setText(String.format("Days: %s. Price: n/a", days));
+                            text.append( String.format("Price: %s", NumberFormat.getCurrencyInstance().format(price)));
+
+                        tvPricecalc.setText(text.toString());
                         System.out.println("eof debugging new loginappfb()");
                     } catch (Exception e) {
                         System.out.println("could not parse login json: " + raw + ". exception: " + e.toString());
@@ -390,7 +404,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         };
 
-        String url = "https://yellowdesks.com/holidays/getprice/" + host.getId() + "/" + dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth() + "/" + dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth();
+        String url = "https://api.yellowdesks.com/bookings/prepare/" + host.getId() + "/" + dpFrom.getYear() + "-" + (dpFrom.getMonth()+1) + "-" + dpFrom.getDayOfMonth() + "/" + dpTo.getYear() + "-" + (dpTo.getMonth()+1) + "-" + dpTo.getDayOfMonth();
         tvPricecalc.setText("Loading...");
         downloadWebTask.execute(url);
         System.out.println("sent url: " + url);
