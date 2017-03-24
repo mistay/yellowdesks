@@ -356,6 +356,10 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         changedate();
+
+
+        final TextView tvCancellationscheme = (TextView) findViewById( R.id.tvCancellationscheme );
+        tvCancellationscheme.setText( host.getCancellationscheme() == Host.CANCELLATIONSCHEMES.hard ? "7 Workdays cancellation" : "12h cancellation" );
     }
 
     Double price = null;
