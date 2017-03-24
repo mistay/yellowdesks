@@ -169,7 +169,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 for (Host host : hosts) {
 
                     if (host.getHost().equals("test") && ! Developerdevices.isDeveloperDevice()) {
-                        // nur den developer geräten den test-user anzeigen
+                        System.out.println("skipping host: " + host.getHost() + " (no dev device)");
                         continue;
                     }
 
@@ -265,12 +265,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 if (!btnOpenNow.isChecked()) {
                     for (Host host : hosts) {
                         Marker m = host.marker;
-                        m.setVisible( true );
+                        if (m != null)
+                            m.setVisible( true );
+                        else
+                            System.out.println("no marker attatched to this host: " + host.getHost());
                     }
                 } else {
                     for (Host host : hosts) {
                         Marker m = host.marker;
-                        m.setVisible( host.isOpenNow() );
+                        if (m != null)
+                            m.setVisible( host.isOpenNow() );
+                        else
+                            System.out.println("no marker attatched to this host: " + host.getHost());
                     }
                 }
             }
