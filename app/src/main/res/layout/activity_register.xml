@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="at.langhofer.yellowdesks.RegisterActivity"
+    tools:context="com.yellowdesks.android.RegisterActivity"
     android:background="@color/yellwdesksYellow"
     >
 

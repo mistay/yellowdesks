@@ -1,4 +1,4 @@
-package com.yellowdesks.yellowdesks;
+package com.yellowdesks.android;
 
 import android.os.AsyncTask;
 import android.util.Base64;

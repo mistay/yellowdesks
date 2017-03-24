@@ -1,4 +1,4 @@
-package at.yellowdesks.yellowdesks3;
+package com.yellowdesks.yellowdesks3;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.yellowdesks.yellowdesks;
+package com.yellowdesks.android;
 
 /**
  * Created by arminlanghofer on 12.02.17.

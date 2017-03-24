@@ -10,7 +10,7 @@
     android:paddingLeft="6dp"
     android:paddingRight="6dp"
     android:paddingTop="6dp"
-    tools:context="at.langhofer.yellowdesks.BookingreviewActivity"
+    tools:context="com.yellowdesks.android.BookingreviewActivity"
     android:orientation="vertical"
     android:background="@color/yellwdesksYellow"
     >

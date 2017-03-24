@@ -1,4 +1,4 @@
-package com.yellowdesks.yellowdesks;
+package com.yellowdesks.android;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

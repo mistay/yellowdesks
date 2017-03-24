@@ -1,4 +1,4 @@
-package com.yellowdesks.yellowdesks;
+package com.yellowdesks.android;
 
 public class LoggedInUser {
     public final static String PREFLOGINTARGET = "PREFLOGINTARGET";
