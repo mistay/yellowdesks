@@ -87,7 +87,7 @@ public class Data {
                 downloadFinished.taskCompletionResult(success ? "OK" : "NG");
             }
         };
-        downloadWebTask.execute( String.format("https://yellowdesks.com/bookings/bookingrequest/?username=%s&password=%s&host_id=%d&date=%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password, host.getId(), "20170101"));
+        downloadWebTask.execute( String.format("https://api.yellowdesks.com/bookings/bookingrequest/?username=%s&password=%s&host_id=%d&date=%s", Data.getInstance().loginDetails.username, Data.getInstance().loginDetails.password, host.getId(), "20170101"));
     }
 
     public void logout() {
@@ -144,7 +144,7 @@ public class Data {
 
             }
         };
-        downloadWebTask.execute(String.format("https://dummy:%s@yellowdesks.com/users/loginappfb", accesstoken));
+        downloadWebTask.execute(String.format("https://dummy:%s@api.yellowdesks.com/users/loginappfb", accesstoken));
         System.out.println("sent fb login request to yd server");
     }
 
@@ -186,7 +186,7 @@ public class Data {
         };
 
         loginDetails = null;
-        String url = String.format("https://%s:%s@yellowdesks.com/users/getdetails", username, password);
+        String url = String.format("https://%s:%s@api.yellowdesks.com/users/getdetails", username, password);
         downloadWebTask.execute(url);
         System.out.println("sent login request: " + url);
     }
@@ -275,7 +275,7 @@ public class Data {
                                     value.getString("open_saturday_till") == "null" ? null : value.getString("open_saturday_till"),
                                     value.getString("open_sunday_from").equals("null") ? null : value.getString("open_sunday_from"),
                                     value.getString("open_sunday_till") == "null" ? null : value.getString("open_sunday_till"),
-                                    value.getString("open_247fixworkers") == "null" ? null : value.getBoolean("open_247fixworkers"),
+                                    value.getString("open_247fixworkers") == "null" ? false : value.getBoolean("open_247fixworkers"),
                                     price_1day,
                                     price_10days,
                                     price_1month,
@@ -299,7 +299,7 @@ public class Data {
                 }
             }
         };
-        downloadWebTask.execute("https://yellowdesks.com/hosts");
+        downloadWebTask.execute("https://api.yellowdesks.com/hosts");
         System.out.println("sent download request");
     }
 
