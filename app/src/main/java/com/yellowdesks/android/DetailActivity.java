@@ -248,10 +248,32 @@ public class DetailActivity extends AppCompatActivity {
 
 
         final TextView tvOpeninghours = (TextView) findViewById(R.id.tvOpeninghours);
-        if (host.getOpenFrom() == null)
-            tvOpeninghours.setText(String.format("Opening Hours: n/a"));
-        else
-            tvOpeninghours.setText(String.format("Opening Hours: Mon %s till Fri %s%s", host.getOpenFrom(), host.getOpenTill(), host.getOpen247fixworkers() ? "\nMember Access 24/7" : "" ));
+
+
+        StringBuilder sbOpeningHours = new StringBuilder(  );
+
+        if (host.open_monday_from != null && host.open_monday_till != null)
+            sbOpeningHours.append( String.format( "Mon: %s to %s\n", host.open_monday_from, host.open_monday_till ));
+        if (host.open_tuesday_from != null && host.open_tuesday_till != null)
+            sbOpeningHours.append( String.format( "Tue: %s to %s\n", host.open_tuesday_from, host.open_tuesday_till ));
+        if (host.open_wednesday_from != null && host.open_wednesday_till != null)
+            sbOpeningHours.append( String.format( "Wed: %s to %s\n", host.open_wednesday_from, host.open_wednesday_till ));
+        if (host.open_thursday_from != null && host.open_thursday_till != null)
+            sbOpeningHours.append( String.format( "Thu: %s to %s\n", host.open_thursday_from, host.open_thursday_till ));
+        if (host.open_friday_from != null && host.open_friday_till != null)
+            sbOpeningHours.append( String.format( "Fri: %s to %s\n", host.open_friday_from, host.open_friday_till ));
+        if (host.open_saturday_from != null && host.open_saturday_till != null)
+            sbOpeningHours.append( String.format( "Sat: %s to %s\n", host.open_saturday_from, host.open_saturday_till ));
+        if (host.open_sunday_from != null && host.open_sunday_till != null)
+            sbOpeningHours.append( String.format( "Sun: %s to %s\n", host.open_sunday_from, host.open_sunday_till ));
+
+        if (sbOpeningHours.length() == 0)
+            sbOpeningHours.append(String.format("Opening Hours: n/a\n"));
+
+        if (host.getOpen247fixworkers())
+            sbOpeningHours.append(String.format("Member Access: 24/7"));
+
+        tvOpeninghours.setText(sbOpeningHours.toString());
 
         StringBuilder tmp= new StringBuilder();
         if (host.getPrice1Day() != null)
