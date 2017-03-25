@@ -45,12 +45,11 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         FacebookSdk.setIsDebugEnabled(true);
-        System.out.println("user id:" + AppEventsLogger.getUserID());
 
+        System.out.println("user id:" + AppEventsLogger.getUserID());
         System.out.println("access token: " + AccessToken.getCurrentAccessToken() );
 
         final TextView txtLoginError = (TextView) findViewById( R.id.txtLoginError );
-
 
         // facebook login button//
         final LoginButton btnF = (LoginButton) findViewById(R.id.btnLoginFacebook);
@@ -59,11 +58,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 txtLoginError.setText("");
-
-
             }
         } );
-
 
         // regular (non-facebook) login button
         final Button btnLoginBackend = (Button) findViewById(R.id.btnLoginBackend);
