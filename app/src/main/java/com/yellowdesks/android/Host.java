@@ -42,20 +42,20 @@ public class Host {
     // e.g. "Creativespace im Herzen Salzburgs"
     private String title = "";
 
-    private String open_monday_from = null;
-    private String open_monday_till = null;
-    private String open_tuesday_from = null;
-    private String open_tuesday_till = null;
-    private String open_wednesday_from = null;
-    private String open_wednesday_till = null;
-    private String open_thursday_from = null;
-    private String open_thursday_till = null;
-    private String open_friday_from = null;
-    private String open_friday_till = null;
-    private String open_saturday_from = null;
-    private String open_saturday_till = null;
-    private String open_sunday_from = null;
-    private String open_sunday_till = null;
+    public String open_monday_from = null;
+    public String open_monday_till = null;
+    public String open_tuesday_from = null;
+    public String open_tuesday_till = null;
+    public String open_wednesday_from = null;
+    public String open_wednesday_till = null;
+    public String open_thursday_from = null;
+    public String open_thursday_till = null;
+    public String open_friday_from = null;
+    public String open_friday_till = null;
+    public String open_saturday_from = null;
+    public String open_saturday_till = null;
+    public String open_sunday_from = null;
+    public String open_sunday_till = null;
     private Boolean open247fixworkers = null;
     private CANCELLATIONSCHEMES cancellationscheme = null;
 
