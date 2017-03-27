@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -202,14 +204,13 @@ public class DetailActivity extends AppCompatActivity {
 
                         host.setBitmapForImage( entry.getKey(), result );
 
-                            try {
-                                mPagerAdapter.notifyDataSetChanged();
-                            } catch (Exception e) {
-                                System.out.println("notifyDataSetChanged exc: " + e.toString());
-
-                            }
-                           // mPager.invalidate();
-                            System.out.println("taskCompletionResult: " + result);
+                        try {
+                            mPagerAdapter.notifyDataSetChanged();
+                        } catch (Exception e) {
+                            System.out.println("notifyDataSetChanged exc: " + e.toString());
+                        }
+                        // mPager.invalidate();
+                        System.out.println("taskCompletionResult: " + result);
                         }
                     };
                     System.out.println("sending download request: " + entry.getKey());
@@ -446,36 +447,59 @@ public class DetailActivity extends AppCompatActivity {
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
+            init();
+        }
+
+        LinkedList<ScreenSlidePageFragment> data = new LinkedList<ScreenSlidePageFragment>();
+
+        private void init() {
+            if (host.getVideoURL() != null) {
+                ScreenSlidePageFragment f = new ScreenSlidePageFragment();
+                f.setVideoURL( host.getVideoURL() );
+                data.add(f);
+            }
+
+            if (host.getBitmap() != null) {
+                ScreenSlidePageFragment f = new ScreenSlidePageFragment();
+                f.setBitmap( host.getBitmap() );
+                data.add(f);
+            }
+
+            HashMap<String, Bitmap> objects = host.getImages();
+            for(Map.Entry<String, Bitmap> entry : objects.entrySet()){
+                    ScreenSlidePageFragment f = new ScreenSlidePageFragment();
+                    f.setBitmap( entry.getValue() );
+                    f.setEntry(entry);
+                    data.add(f);
+            }
         }
 
         @Override
         public Fragment getItem(int position) {
-            ScreenSlidePageFragment f = new ScreenSlidePageFragment();
-
-            Object[] o = host.getImages().values().toArray();
-
-            if (host.getVideoURL() == null) {
-                Bitmap b = (Bitmap) o[position];
-                f.setBitmap( b );
-            } else {
-                if (position == 0)
-                    f.setVideoURL( host.getVideoURL() );
-                else {
-                    Bitmap b = (Bitmap) o[position - 1];
-                    f.setBitmap( b );
-                }
-            }
-            return f;
+            return data.get(position);
         }
 
         @Override
         public int getCount() {
-            return host.getImages().size() + (host.getVideoURL() == null ? 0 : 1);
+            return data.size();
         }
 
         // http://stackoverflow.com/questions/7263291/viewpager-pageradapter-not-updating-the-view
         @Override
         public int getItemPosition(Object object) {
+
+
+            System.out.println("getItemPosition()");
+            System.out.println(data.indexOf( object ));
+            ScreenSlidePageFragment f = (ScreenSlidePageFragment) object;
+
+            // cache fragments that contain video
+            if (f.videoURL != null)
+                return POSITION_UNCHANGED;
+
+            if (f.tryToSetBitmap())
+                return POSITION_NONE;
+
             return POSITION_NONE;
         }
     }
